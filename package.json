@@ -1,8 +1,8 @@
 {
-  "name": "clavis",
-  "productName": "clavis",
+  "name": "@adsisto/clavis",
+  "productName": "Clavis",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -13,22 +13,23 @@
   },
   "keywords": [],
   "author": "andrewying",
-  "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "appCopyright": "Copyright (c) Andrew Ying 2019.",
+        "ignore": [
+          "/^\\/?\\.idea/"
+        ],
+        "appBundleId": "org.adsisto.clavis"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "clavis"
-          }
+          "config": {}
         },
         {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
+          "name": "@electron-forge/maker-dmg",
+          "config": {}
         },
         {
           "name": "@electron-forge/maker-deb",
