@@ -1,0 +1,16 @@
+[*]
+charset=utf-8
+end_of_line=lf
+insert_final_newline=false
+indent_style=space
+indent_size=4
+
+[{.eslintrc,.babelrc,jest.config,.stylelintrc,*.bowerrc,*.jsb3,*.jsb2,*.json, *.js}]
+indent_size=2
+
+[*.go]
+tab_width=4
+
+[{.analysis_options,*.yml,*.yaml}]
+indent_size=2
+
