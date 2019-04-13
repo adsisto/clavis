@@ -11,7 +11,7 @@
  * A copy of the API Copyleft License is available at <LICENSE.md>.
  */
 
-package helper
+package main
 
 import (
 	"bufio"
@@ -37,6 +37,11 @@ var (
 )
 
 func GenerateKeys(options *KeysOptions) {
+	if options.Identity == "" {
+		usage()
+		os.Exit(65)
+	}
+
 	var key []byte
 
 	switch options.Type {
@@ -46,45 +51,50 @@ func GenerateKeys(options *KeysOptions) {
 		key = GenerateRSAKey(options.Size)
 	default:
 		fmt.Println("Invalid cryptographic mechanism. Exiting...")
-		os.Exit(1)
+		os.Exit(65)
 	}
 
 	var b bytes.Buffer
 	writer := bufio.NewWriter(&b)
 
 	pemBlock := &pem.Block{
-		Type:  "PRIVATE KEY",
+		Type:  fmt.Sprintf("%s PRIVATE KEY", options.Type),
 		Bytes: key,
 	}
 
 	err := pem.Encode(writer, pemBlock)
 	if err != nil {
 		fmt.Sprintln(err)
-		os.Exit(1)
+		os.Exit(70)
 	}
 
 	_ = writer.Flush()
 	err = keyring.Set("clavis", options.Identity, b.String())
 	if err != nil {
 		fmt.Sprintln(err)
-		os.Exit(1)
+		os.Exit(77)
 	}
 
 	os.Exit(0)
 }
 
 func GenerateECKeys(size int) []byte {
-	curve := ECCurveMap[size]
+	curve, ok := ECCurveMap[size]
+	if !ok {
+		fmt.Println("Size of the keys are invalid. Exiting...")
+		os.Exit(65)
+	}
+
 	key, err := ecdsa.GenerateKey(curve, rand.Reader)
 	if err != nil {
-		fmt.Sprintln(err)
-		os.Exit(1)
+		fmt.Println(err)
+		os.Exit(70)
 	}
 
 	encoded, err := x509.MarshalECPrivateKey(key)
 	if err != nil {
-		fmt.Sprintln(err)
-		os.Exit(1)
+		fmt.Println(err)
+		os.Exit(70)
 	}
 
 	return encoded
@@ -93,8 +103,8 @@ func GenerateECKeys(size int) []byte {
 func GenerateRSAKey(size int) []byte {
 	key, err := rsa.GenerateKey(rand.Reader, size)
 	if err != nil {
-		fmt.Sprintln(err)
-		os.Exit(1)
+		fmt.Println(err)
+		os.Exit(70)
 	}
 
 	return x509.MarshalPKCS1PrivateKey(key)

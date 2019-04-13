@@ -11,69 +11,119 @@
  * A copy of the API Copyleft License is available at <LICENSE.md>.
  */
 
-package helper
+package main
 
 import (
-	"flag"
+	"fmt"
+	flag "github.com/spf13/pflag"
 	"os"
 )
 
 type KeysOptions struct {
+	Identity string
 	Type     string
 	Size     int
-	Identity string
+	Help     bool
 }
 
 type TokenOptions struct {
-	Size int
+	Identity string
+	Size     int
+	Help     bool
 }
 
-func main() {
-	keysCommand := flag.NewFlagSet("keys", flag.ExitOnError)
-	tokenCommand := flag.NewFlagSet("token", flag.ExitOnError)
+var (
+	keysCommand  = flag.NewFlagSet("keys", flag.ExitOnError)
+	tokenCommand = flag.NewFlagSet("token", flag.ExitOnError)
 
-	keysOptions := &KeysOptions{
-		Type: *keysCommand.String(
-			"type",
-			"EC",
-			"type of key cryptography of the generated keys",
-		),
-		Size: *keysCommand.Int(
-			"size",
-			256,
-			"size of the generated keys",
-		),
-		Identity: *keysCommand.String(
+	keysOptions = &KeysOptions{
+		Identity: *keysCommand.StringP(
 			"id",
+			"i",
 			"",
 			"identity for the generated keys",
 		),
-	}
-
-	tokenOptions := &TokenOptions{
-		Size: *tokenCommand.Int(
+		Type: *keysCommand.StringP(
+			"type",
+			"t",
+			"EC",
+			"type of key cryptography of the generated keys",
+		),
+		Size: *keysCommand.IntP(
 			"size",
+			"s",
+			256,
+			"size of the generated keys",
+		),
+		Help: *keysCommand.BoolP(
+			"help",
+			"h",
+			false,
+			"prints help information",
+		),
+	}
+	tokenOptions = &TokenOptions{
+		Identity: *tokenCommand.StringP(
+			"id",
+			"i",
+			"",
+			"identity for the generated keys",
+		),
+		Size: *tokenCommand.IntP(
+			"size",
+			"s",
 			256,
 			"size of the hash",
 		),
+		Help: *tokenCommand.BoolP(
+			"help",
+			"h",
+			false,
+			"prints help information",
+		),
 	}
 
-	mode := os.Args[1]
+	usage = func() {
+		fmt.Printf("Usage: %s [keys|token] [OPTIONS]\n\n", os.Args[0])
+		fmt.Println("keys: Generates private key")
+		keysCommand.PrintDefaults()
+		fmt.Printf("\ntoken: Generates JWT for authentication\n")
+		tokenCommand.PrintDefaults()
+	}
+)
 
-	switch mode {
+func init() {
+	keysCommand.Usage = usage
+	tokenCommand.Usage = usage
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		usage()
+		os.Exit(64)
+	}
+
+	switch os.Args[1] {
 	case "keys":
-		keysCommand.Parse(os.Args[2:])
+		_ = keysCommand.Parse(os.Args[2:])
 	case "token":
-		tokenCommand.Parse(os.Args[2:])
+		_ = tokenCommand.Parse(os.Args[2:])
 	default:
-		flag.PrintDefaults()
-		os.Exit(1)
+		usage()
+		os.Exit(64)
+	}
+
+	if keysOptions.Help || tokenOptions.Help {
+		usage()
+		os.Exit(0)
 	}
 
 	switch {
 	case keysCommand.Parsed():
 		GenerateKeys(keysOptions)
 	case tokenCommand.Parsed():
-
+		GenerateToken(tokenOptions)
+	default:
+		os.Exit(70)
 	}
 }
