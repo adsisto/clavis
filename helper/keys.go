@@ -39,19 +39,19 @@ var (
 	}
 )
 
-func GenerateKeys(options *KeysOptions) {
-	if options.Identity == "" {
+func GenerateKeys(options KeysOptions) {
+	if *options.Identity == "" {
 		usage()
 		os.Exit(65)
 	}
 
 	var key []byte
 
-	switch options.Type {
+	switch *options.Type {
 	case "EC":
-		key = GenerateECKeys(options.Size)
+		key = GenerateECKeys(*options.Size)
 	case "RSA":
-		key = GenerateRSAKey(options.Size)
+		key = GenerateRSAKey(*options.Size)
 	default:
 		fmt.Println("Invalid cryptographic mechanism. Exiting...")
 		os.Exit(65)
@@ -61,7 +61,7 @@ func GenerateKeys(options *KeysOptions) {
 	writer := bufio.NewWriter(&b)
 
 	pemBlock := &pem.Block{
-		Type:  fmt.Sprintf("%s PRIVATE KEY", options.Type),
+		Type:  fmt.Sprintf("%s PRIVATE KEY", *options.Type),
 		Bytes: key,
 	}
 
@@ -72,7 +72,7 @@ func GenerateKeys(options *KeysOptions) {
 	}
 
 	_ = writer.Flush()
-	err = keyring.Set("clavis", options.Identity, b.String())
+	err = keyring.Set("clavis", *options.Identity, b.String())
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(77)

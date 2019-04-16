@@ -1,14 +1,17 @@
 /*
- * Copyright (c) Andrew Ying 2019.
+ * Clavis
+ * Copyright (c) 2019 Andrew Ying
  *
- * This file is part of Clavis.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of version 3 of the GNU General Public License as published by the
+ * Free Software Foundation.
  *
- * Clavis is free software. You can use, share, and build it under the terms of the
- * API Copyleft License. As far as the law allows, this software comes as is, without
- * any warranty or condition, and no contributor will be liable to anyone for any
- * damages related to this software or this license, under any kind of legal claim.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * A copy of the API Copyleft License is available at <LICENSE.md>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package main
@@ -20,62 +23,62 @@ import (
 )
 
 type KeysOptions struct {
-	Identity string
-	Type     string
-	Size     int
-	Help     bool
+	Identity *string
+	Type     *string
+	Size     *int
+	Help     *bool
 }
 
 type TokenOptions struct {
-	Identity string
-	Size     int
-	Help     bool
+	Identity *string
+	Size     *int
+	Help     *bool
 }
 
 var (
 	keysCommand  = flag.NewFlagSet("keys", flag.ExitOnError)
 	tokenCommand = flag.NewFlagSet("token", flag.ExitOnError)
 
-	keysOptions = &KeysOptions{
-		Identity: *keysCommand.StringP(
+	keysOptions = KeysOptions{
+		Identity: keysCommand.StringP(
 			"id",
 			"i",
 			"",
 			"identity for the generated keys",
 		),
-		Type: *keysCommand.StringP(
+		Type: keysCommand.StringP(
 			"type",
 			"t",
 			"EC",
 			"type of key cryptography of the generated keys",
 		),
-		Size: *keysCommand.IntP(
+		Size: keysCommand.IntP(
 			"size",
 			"s",
 			256,
 			"size of the generated keys",
 		),
-		Help: *keysCommand.BoolP(
+		Help: keysCommand.BoolP(
 			"help",
 			"h",
 			false,
 			"prints help information",
 		),
 	}
-	tokenOptions = &TokenOptions{
-		Identity: *tokenCommand.StringP(
+	tokenOptions = TokenOptions{
+		Identity: tokenCommand.StringP(
 			"id",
 			"i",
 			"",
 			"identity for the generated keys",
 		),
-		Size: *tokenCommand.IntP(
+		Size: tokenCommand.IntP(
 			"size",
 			"s",
 			256,
 			"size of the hash",
 		),
-		Help: *tokenCommand.BoolP(
+		Help: tokenCommand.BoolP(
 			"help",
 			"h",
 			false,
@@ -113,7 +116,7 @@ func main() {
 		os.Exit(64)
 	}
 
-	if keysOptions.Help || tokenOptions.Help {
+	if *keysOptions.Help || *tokenOptions.Help {
 		usage()
 		os.Exit(0)
 	}

@@ -1,14 +1,17 @@
 /*
- * Copyright (c) Andrew Ying 2019.
+ * Clavis
+ * Copyright (c) 2019 Andrew Ying
  *
- * This file is part of Clavis.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of version 3 of the GNU General Public License as published by the
+ * Free Software Foundation.
  *
- * Clavis is free software. You can use, share, and build it under the terms of the
- * API Copyleft License. As far as the law allows, this software comes as is, without
- * any warranty or condition, and no contributor will be liable to anyone for any
- * damages related to this software or this license, under any kind of legal claim.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * A copy of the API Copyleft License is available at <LICENSE.md>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package main
@@ -22,13 +25,13 @@ import (
 	"time"
 )
 
-func GenerateToken(options *TokenOptions) {
-	if options.Identity == "" {
+func GenerateToken(options TokenOptions) {
+	if *options.Identity == "" {
 		usage()
 		os.Exit(64)
 	}
 
-	key, err := keyring.Get("calvis", options.Identity)
+	key, err := keyring.Get("calvis", *options.Identity)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(64)
@@ -47,7 +50,7 @@ func GenerateToken(options *TokenOptions) {
 		os.Exit(64)
 	}
 
-	algName = fmt.Sprintf("%sS%d", algName, options.Size)
+	algName = fmt.Sprintf("%sS%d", algName, *options.Size)
 	alg := jws.GetSigningMethod(algName)
 	if alg == nil {
 		fmt.Println("Invalid hash size. Exiting...")
@@ -56,7 +59,7 @@ func GenerateToken(options *TokenOptions) {
 
 	now := time.Now()
 	claims := jws.Claims{
-		"iss": options.Identity,
+		"iss": *options.Identity,
 		"iat": now.String(),
 		"nbf": now.String(),
 		"exp": now.Add(time.Second * 30).String(),
