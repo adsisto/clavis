@@ -72,6 +72,6 @@ func GenerateToken(options TokenOptions) {
 		os.Exit(70)
 	}
 
-	fmt.Println(token)
+	fmt.Printf("Token: [[ %s ]]\n", token)
 	os.Exit(0)
 }

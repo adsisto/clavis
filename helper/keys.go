@@ -17,17 +17,18 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
-	"fmt"
-	"github.com/zalando/go-keyring"
-	"os"
+    "bufio"
+    "bytes"
+    "crypto/ecdsa"
+    "crypto/elliptic"
+    "crypto/rand"
+    "crypto/rsa"
+    "crypto/x509"
+    "encoding/base64"
+    "encoding/pem"
+    "fmt"
+    "github.com/zalando/go-keyring"
+    "os"
 )
 
 var (
@@ -46,12 +47,13 @@ func GenerateKeys(options KeysOptions) {
 	}
 
 	var key []byte
+	var pubKey []byte
 
 	switch *options.Type {
 	case "EC":
-		key = GenerateECKeys(*options.Size)
+		key, pubKey = GenerateECKeys(*options.Size)
 	case "RSA":
-		key = GenerateRSAKey(*options.Size)
+		key, pubKey = GenerateRSAKey(*options.Size)
 	default:
 		fmt.Println("Invalid cryptographic mechanism. Exiting...")
 		os.Exit(65)
@@ -78,11 +80,12 @@ func GenerateKeys(options KeysOptions) {
 		os.Exit(77)
 	}
 
-	fmt.Println("Successfully generated private key.")
+    fmt.Println("Successfully generated private key.")
+	fmt.Printf("Public Key: [[ %s ]]\n", base64.StdEncoding.EncodeToString(pubKey))
 	os.Exit(0)
 }
 
-func GenerateECKeys(size int) []byte {
+func GenerateECKeys(size int) ([]byte, []byte) {
 	curve, ok := ECCurveMap[size]
 	if !ok {
 		fmt.Println("Size of the keys are invalid. Exiting...")
@@ -101,15 +104,22 @@ func GenerateECKeys(size int) []byte {
 		os.Exit(70)
 	}
 
-	return encoded
+	encodedPub, err := x509.MarshalPKIXPublicKey(&key.PublicKey)
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(70)
+    }
+
+	return encoded, encodedPub
 }
 
-func GenerateRSAKey(size int) []byte {
+func GenerateRSAKey(size int) ([]byte, []byte) {
 	key, err := rsa.GenerateKey(rand.Reader, size)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(70)
 	}
 
-	return x509.MarshalPKCS1PrivateKey(key)
+	return x509.MarshalPKCS1PrivateKey(key),
+	    x509.MarshalPKCS1PublicKey(&key.PublicKey)
 }
