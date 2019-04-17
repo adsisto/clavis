@@ -1,0 +1,157 @@
+/*!
+ * Clavis
+ * Copyright (c) 2019 Andrew Ying
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of version 3 of the GNU General Public License as published by the
+ * Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 200;
+    src: url("./fonts/OpenSans-Light.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: 200;
+    src: url("./fonts/OpenSans-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 400;
+    src: url("./fonts/OpenSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: 400;
+    src: url("./fonts/OpenSans-Italic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 600;
+    src: url("./fonts/OpenSans-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: 600;
+    src: url("./fonts/OpenSans-SemiBoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 800;
+    src: url("./fonts/OpenSans-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: 800;
+    src: url("./fonts/OpenSans-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 900;
+    src: url("./fonts/OpenSans-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-style: italic;
+    font-weight: 900;
+    src: url("./fonts/OpenSans-ExtraBoldItalic.ttf") format("truetype");
+}
+
+html {
+    background-color: #f8f9f9;
+    color: #124a4e;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    width: 100vw;
+}
+
+header {
+    position: fixed;
+    width: calc(100% - 1.5rem);
+    background: #CEDEE7;
+    border-bottom: 1px solid #BEC1C3;
+    padding: .6rem .75rem;
+    font-size: .8rem;
+    font-weight: bold;
+    text-align: center;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+.button {
+    background-color: #274B4F;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: .25rem;
+    margin: .5rem 0;
+    padding: .5rem .65rem;
+}
+
+.content {
+    width: calc(100% - 1.5rem);
+    padding: 3rem .75rem;
+}
+
+.form-group {
+    display: flex;
+    width: 100%;
+    margin-bottom: .75rem;
+
+    label {
+        width: 20%;
+        padding-right: .5rem;
+        align-self: center;
+        -webkit-user-select: none;
+    }
+
+    .form-item {
+        width: 80%;
+        border: 1px solid #B0B0B0;
+        border-radius: .35rem;
+        box-shadow: none;
+        background-color: white;
+        padding: .5rem .65rem;
+        font-size: 1rem;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

@@ -1,17 +1,21 @@
 /*
- * Copyright (c) Andrew Ying 2019.
+ * Clavis
+ * Copyright (c) 2019 Andrew Ying
  *
- * This file is part of Clavis.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of version 3 of the GNU General Public License as published by the
+ * Free Software Foundation.
  *
- * Clavis is free software. You can use, share, and build it under the terms of the
- * API Copyleft License. As far as the law allows, this software comes as is, without
- * any warranty or condition, and no contributor will be liable to anyone for any
- * damages related to this software or this license, under any kind of legal claim.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * A copy of the API Copyleft License is available at <LICENSE.md>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 const { app, BrowserWindow, Menu, Tray } = require('electron');
+
 const Store = require('electron-store');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -24,6 +28,7 @@ const storeSchema = {
   startOnBoot: { type: 'boolean', default: true },
   hiddenOnStart: { type: 'boolean', default: true },
   identity: { type: 'string', format: 'email' },
+  publicKey: { type: 'string' },
   hotKey: { type: 'string' }
 };
 
@@ -43,8 +48,13 @@ app.setLoginItemSettings({
 const setupWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 500,
+    height: 300,
+    resizable: false,
+    titleBarStyle: "hiddenInset",
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   // and load the index.html of the app.
@@ -75,6 +85,10 @@ const trayMenu = Menu.buildFromTemplate([
   {
     label: 'About',
     type: 'normal'
+  },
+  {
+    label: 'Exit',
+    type: 'normal'
   }
 ]);
 
@@ -95,7 +109,7 @@ const setUpTray = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   if (process.platform === 'darwin') {
-    app.dock.hide();
+    // app.dock.hide();
   }
 
   setUpTray();
