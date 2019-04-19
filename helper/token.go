@@ -17,6 +17,7 @@
 package main
 
 import (
+	"crypto/x509"
 	"encoding/pem"
 	"fmt"
 	"github.com/SermoDigital/jose/jws"
@@ -31,20 +32,32 @@ func GenerateToken(options TokenOptions) {
 		os.Exit(64)
 	}
 
-	key, err := keyring.Get("calvis", *options.Identity)
+	key, err := keyring.Get("clavis", *options.Identity)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Unable to retrieve key from keyring: %s\n", err)
 		os.Exit(64)
 	}
 
 	var algName string
 	block, _ := pem.Decode([]byte(key))
 
+	var rawKey interface{}
+
 	switch block.Type {
 	case "EC PRIVATE KEY":
 		algName = "E"
+		rawKey, err = x509.ParseECPrivateKey(block.Bytes)
+		if err != nil {
+			fmt.Println("Unable to parse private key. Exiting...")
+			os.Exit(64)
+		}
 	case "RSA PRIVATE KEY":
 		algName = "R"
+		rawKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+		if err != nil {
+			fmt.Println("Unable to parse private key. Exiting...")
+			os.Exit(64)
+		}
 	default:
 		fmt.Println("Invalid private key stored in keyring. Exiting...")
 		os.Exit(64)
@@ -53,7 +66,7 @@ func GenerateToken(options TokenOptions) {
 	algName = fmt.Sprintf("%sS%d", algName, *options.Size)
 	alg := jws.GetSigningMethod(algName)
 	if alg == nil {
-		fmt.Println("Invalid hash size. Exiting...")
+		fmt.Println("Invalid hash algorithm. Exiting...")
 		os.Exit(64)
 	}
 
@@ -66,12 +79,13 @@ func GenerateToken(options TokenOptions) {
 	}
 
 	jwt := jws.NewJWT(claims, alg)
-	token, err := jwt.Serialize(block.Bytes)
+	token, err := jwt.Serialize(rawKey)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Unable to sign authentication token: %s\n", err)
 		os.Exit(70)
 	}
 
+	fmt.Println("Successfully generated authentication token.")
 	fmt.Printf("Token: [[ %s ]]\n", token)
 	os.Exit(0)
 }
