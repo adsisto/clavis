@@ -27,7 +27,7 @@ const storeSchema = {
   ready: { type: 'boolean', default: false },
   startOnBoot: { type: 'boolean', default: true },
   hiddenOnStart: { type: 'boolean', default: true },
-  identity: { type: 'string', format: 'email' },
+  identity: { type: 'string' },
   publicKey: { type: 'string' },
   hotKey: { type: 'string' }
 };
@@ -88,7 +88,8 @@ const trayMenu = Menu.buildFromTemplate([
   },
   {
     label: 'Exit',
-    type: 'normal'
+    type: 'normal',
+    click: () => app.exit(0)
   }
 ]);
 

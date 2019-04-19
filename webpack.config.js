@@ -25,14 +25,18 @@ const production = process.env.NODE_ENV === "production";
 
 let config = {
   mode: production ? "production" : "development",
+  node: {
+    __dirname: false
+  },
   context: path.resolve(__dirname, "src"),
   target: "electron-main",
   entry: {
+    index: "./index.js",
     app: "./app.js"
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "app.js"
+    filename: "[name].js"
   },
   module: {
     rules: [
@@ -80,8 +84,7 @@ let config = {
       { filename: "style.css" }
     ),
     new CopyPlugin([
-      { from: 'index.html', to: 'index.html' },
-      { from: 'index.js', to: 'index.js' }
+      { from: 'index.html', to: 'index.html' }
     ]),
   ],
   optimization: {

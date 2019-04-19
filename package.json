@@ -20,26 +20,19 @@
     "appId": "org.adsisto.clavis",
     "files": [
       "**/*",
+      "!node_modules/**/*",
       "!src/**/*",
       "!helper/**/*",
       "!.editorconfig",
       "!{README.md,LICENSE.md}",
-      "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-      "!node_modules/*.d.ts",
-      "!node_modules/.bin",
       "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
       "!**/._*",
-      "!**/{.DS_Store,.git,.gitignore,.gitattributes}",
+      "!**/{.DS_Store,.git,.gitignore,.gitattributes,.babelrc,.editorconfig}",
       "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
       "!*.config.js",
       "!{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
     ],
     "remoteBuild": false
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^3.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -58,6 +51,9 @@
     "electron-builder": "^20.39.0",
     "electron-debug": "^2.2.0",
     "electron-devtools-installer": "^2.2.4",
+    "electron-log": "^3.0.5",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^3.2.0",
     "extract-css-chunks-webpack-plugin": "^4.3.2",
     "file-loader": "^3.0.1",
     "node-sass": "^4.0.0",

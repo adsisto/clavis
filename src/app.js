@@ -30,7 +30,7 @@ function App() {
     ready: { type: 'boolean', default: false },
     startOnBoot: { type: 'boolean', default: true },
     hiddenOnStart: { type: 'boolean', default: true },
-    identity: { type: 'string', format: 'email' },
+    identity: { type: 'string' },
     publicKey: { type: 'string' },
     hotKey: { type: 'string' }
   };
