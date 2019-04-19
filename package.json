@@ -11,7 +11,7 @@
     "build:go": "cd helper && go build -o ../bin/helper .",
     "build:scripts-dev": "cross-env NODE_ENV=development webpack --config webpack.config.js",
     "build:scripts-prod": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "build:app": "CSC_NAME=\"Andrew Ying\" electron-builder",
+    "build:app": "electron-builder",
     "package": "yarn run build:go && yarn run build:scripts-prod && yarn run build:app"
   },
   "keywords": [],
@@ -22,28 +22,6 @@
   "browserslist": [
     "electron 4.1"
   ],
-  "build": {
-    "appId": "org.adsisto.clavis",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "**/*",
-      "!node_modules/**/*",
-      "!src/**/*",
-      "!helper/**/*",
-      "!.editorconfig",
-      "!{README.md,LICENSE.md}",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.gitignore,.gitattributes,.babelrc,.editorconfig}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!*.config.js",
-      "!{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
-    ],
-    "generateUpdatesFilesForAllChannels": true,
-    "remoteBuild": false
-  },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.4.0",

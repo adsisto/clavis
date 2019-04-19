@@ -1,0 +1,27 @@
+{
+  "appId": "org.adsisto.clavis",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "**/*",
+    "!node_modules/**/*",
+    "!src/**/*",
+    "!helper/**/*",
+    "!{README.md,LICENSE.md}",
+    "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+    "!**/._*",
+    "!**/{.DS_Store,.git,.gitignore,.gitattributes,.babelrc,.editorconfig}",
+    "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+    "!*.config.js",
+    "!{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+    "!electron-builder.*"
+  ],
+  "generateUpdatesFilesForAllChannels": true,
+  "remoteBuild": false,
+  "mac": {
+    "binaries": [
+      "bin/helper"
+    ]
+  }
+}

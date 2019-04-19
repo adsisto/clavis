@@ -4,3 +4,4 @@ release
 dist
 .idea
 *.iml
+*.env
