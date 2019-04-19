@@ -16,20 +16,49 @@
 
 import React, { useState, useEffect } from "react";
 import { withRouter, Redirect } from "react-router-dom";
+import { validate } from "validate.js";
 import { useIdentity, usePublicKey, useReady } from "../hooks";
+import log from "electron-log";
+import { exec } from "child_process";
 
 function Setup(props) {
   const store = props.store;
 
-  const { ready, setReady } = useReady(store);
-  const { identity, setIdentity } = useIdentity(store);
-  const { publicKey, setPublicKey } = usePublicKey(store);
+  const [ redirect, setRedirect ] = useState(undefined);
+  const [ loading, setLoading ] = useState(undefined);
+  const [ error, setError ] = useState(undefined);
 
   const RSAOptions = [ "1024", "2048", "5094" ];
   const ECOptions = [ "224", "256", "384", "521" ];
   const [ keySizeOptions, setKeySizeOptions ] = useState(RSAOptions);
 
+  const constraints = {
+    identity: {
+      presence: {
+        allowEmpty: false
+      },
+      email: true
+    },
+    key: {
+      inclusion: {
+        within: [ "RSA", "EC" ]
+      }
+    },
+    keySize: {
+      inclusion: {
+        within: keySizeOptions
+      }
+    }
+  };
+
+  const { ready, setReady } = useReady(store);
+  const { publicKey, setPublicKey } = usePublicKey(store);
+
+  const { identity, setIdentity } = useIdentity(store);
+  const [ identityError, setIdentityError ] = useState(undefined);
+
   const [ key, setKey ] = useState("RSA");
+  const [ keyError, setKeyError ] = useState(undefined);
   useEffect(() => {
     switch (key) {
       case "RSA":
@@ -40,21 +69,46 @@ function Setup(props) {
         setKeySizeOptions(ECOptions);
         setKeySize("256");
         break;
-      default:
-        console.error("Invalid key type \"" + key + "\" selected.");
     }
   }, [ key ]);
+
   const [ keySize, setKeySize ] = useState("2048");
+  const [ keySizeError, setKeySizeError ] = useState(undefined);
 
+  const errorRender = (field, error) => {
+    return error
+      ? <span className="form-error-message">{ field } { error[0] }</span>
+      : "";
+  };
 
-  const onIdentityChange = (e) => {
-    setIdentity(e.target.value);
-  };
-  const onKeyChange = (e) => {
-    setKey(e.target.value);
-  };
-  const onKeySizeChange = (e) => {
-    setKeySize(e.target.value);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setLoading("Generating keys...");
+    exec(
+      `./bin/helper key --id ${identity} --type ${key} --size ${parseInt(keySize)}`,
+      {
+        timeout: 30
+      },
+      (err, stdout, stderr) => {
+        if (err) {
+          setLoading(undefined);
+
+          log.error(`Failed to generated key pair. Command line output was:\n${stderr}`);
+          setError("Failed to generate keys. Please try again.");
+
+          return;
+        }
+
+        setLoading("Checking generated keys...");
+        const pattern = /Public Key: \[\[ [A-Za-z0-9\+\/\=]+ \]\]/m;
+        let key = stdout.replace(pattern, "$1");
+
+        setPublicKey(key);
+        log.info("Successfully generated new key pair.");
+
+        setRedirect("/home");
+      }
+    )
   };
 
   if (ready) {
@@ -68,34 +122,48 @@ function Setup(props) {
       <header>
         Set-up – Calvis
       </header>
+      <div className="content-container">
       <div className="content">
         <h3>Set-up Private Keys</h3>
-        <div className="form-group">
+        { redirect ? <Redirect to={ redirect } /> : "" }
+        { error ? <div className="error">{ error }</div> : "" }
+        <div className={ identityError ? "form-group form-error" : "form-group" }>
           <label>Identity</label>
           <input className="form-item" type="text" name="identity"
-                 value={ identity } onChange={ onIdentityChange } />
+            value={ identity } onChange={ (e) => setIdentity(e.target.value) }
+            onBlur={ () => setIdentityError(validate.single(identity, constraints.identity)) } />
         </div>
-        <div className="form-group">
+        { errorRender("Identity", identityError) }
+        <div className={ keyError ? "form-group form-error" : "form-group" }>
           <label>Key Type</label>
           <select className="form-item" name="key" value={ key }
-                  onChange={ onKeyChange }>
+            onChange={ (e) => setKey(e.target.value) }
+            onBlur={ () => setKeyError(validate.single(key, constraints.key)) }>
             <option value="RSA">RSA</option>
             <option value="EC">Elliptic Curve</option>
           </select>
         </div>
-        <div className="form-group">
+        { errorRender("Key type", keyError) }
+        <div className={ keySizeError ? "form-group form-error" : "form-group" }>
           <label>Key Size</label>
           <select className="form-item" name="key-size" value={ keySize }
-                  onChange={ onKeySizeChange }>
+            onChange={ (e) => setKeySize(e.target.value) }
+            onBlur={ () => setKeySizeError(validate.single(keySize, constraints.keySize)) }>
             { keySizeOptions.map((item) =>
               <option key={ item } value={ item }>{ item }</option>
             )}
           </select>
         </div>
-        <button className="button">Next</button>
+        { errorRender("Key size", keySizeError) }
+        <button className="button" onClick={ onSubmit }>Next</button>
       </div>
+      </div>
+      { loading ? <div className="loading-overlay">
+        <div className="spinning-loader"></div>
+        <div className="description">{ loading }</div>
+      </div> : "" }
     </div>
   )
 }
 
-export default withRouter(Setup)
+export default withRouter(Setup);
