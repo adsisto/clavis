@@ -24,6 +24,7 @@ export function useReady(store) {
 
   return { ready, setReady };
 }
+
 export function useIdentity(store) {
   const [ identity, setIdentity ] = useState(store.get("identity", ""));
   useEffect(() => {

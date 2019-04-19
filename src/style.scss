@@ -158,6 +158,28 @@ h3 {
     }
 }
 
+.identity {
+    width: 100%;
+    margin: 0 -.75rem;
+    padding: .5rem .75rem;
+    border-top: 1px solid #BEC1C3;
+    border-bottom: 1px solid #BEC1C3;
+    -webkit-user-select: none;
+
+    &-description {
+        font-size: .8rem;
+    }
+
+    &-text {
+        margin-bottom: .25rem;
+    }
+}
+
+.public-key {
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
 .form-group {
     display: flex;
     width: 100%;
@@ -225,6 +247,7 @@ h3 {
     background-color: transparentize(#f8f9f9, .1);
     flex-direction: column;
     justify-content: center;
+    z-index: 100;
 
     .spinning-loader {
         width: 30px;

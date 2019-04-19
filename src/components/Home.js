@@ -17,6 +17,7 @@
 import React from "react";
 import { withRouter, Redirect } from "react-router-dom";
 import { useIdentity, usePublicKey, useReady } from "../hooks";
+import { clipboard } from "electron";
 
 function Home(props) {
   const store = props.store;
@@ -24,6 +25,10 @@ function Home(props) {
   const { ready, setReady } = useReady(store);
   const { identity, setIdentity } = useIdentity(store);
   const { publicKey, setPublicKey } = usePublicKey(store);
+
+  const copyKey = () => {
+    clipboard.writeText(publicKey);
+  };
 
   if (!ready) {
     return (
@@ -33,7 +38,20 @@ function Home(props) {
 
   return (
     <div>
-
+      <header>
+        Calvis
+      </header>
+      <div className="content-container">
+      <div className="content">
+        <div className="identity">
+          <span className="identity-description">Identity</span>
+          <h3 className="identity-text">{ identity }</h3>
+        </div>
+        <div className="public-key" onClick={ copyKey }>
+          { publicKey }
+        </div>
+      </div>
+      </div>
     </div>
   )
 }

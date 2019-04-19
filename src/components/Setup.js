@@ -19,6 +19,7 @@ import { withRouter, Redirect } from "react-router-dom";
 import { validate } from "validate.js";
 import { useIdentity, usePublicKey, useReady } from "../hooks";
 import log from "electron-log";
+import path from "path";
 import { exec } from "child_process";
 
 function Setup(props) {
@@ -84,29 +85,33 @@ function Setup(props) {
   const onSubmit = (e) => {
     e.preventDefault();
     setLoading("Generating keys...");
+    log.debug(`Executing command ./bin/helper keys --id ${identity} --type ${key} --size ${keySize}`);
     exec(
-      `./bin/helper key --id ${identity} --type ${key} --size ${parseInt(keySize)}`,
+      `./bin/helper keys --id ${identity} --type ${key} --size ${keySize}`,
       {
-        timeout: 30
+        timeout: 10000,
+        cwd: path.resolve(__dirname, '../')
       },
       (err, stdout, stderr) => {
         if (err) {
           setLoading(undefined);
 
-          log.error(`Failed to generated key pair. Command line output was:\n${stderr}`);
+          log.error(`Failed to generated key pair. Command failed with exit code ${err.code}.`);
+          log.debug(`Command output was:\n${stdout}${stderr}`);
           setError("Failed to generate keys. Please try again.");
 
           return;
         }
 
         setLoading("Checking generated keys...");
-        const pattern = /Public Key: \[\[ [A-Za-z0-9\+\/\=]+ \]\]/m;
-        let key = stdout.replace(pattern, "$1");
+        const pattern = /Public Key: \[\[ ([A-Za-z0-9\+\/\=]+) \]\]/m;
+        log.debug(`Received console output:\n${stdout}`);
+        let match = String(stdout).match(pattern);
 
-        setPublicKey(key);
+        setPublicKey(match[1]);
         log.info("Successfully generated new key pair.");
 
-        setRedirect("/home");
+        setReady(true);
       }
     )
   };
@@ -125,7 +130,6 @@ function Setup(props) {
       <div className="content-container">
       <div className="content">
         <h3>Set-up Private Keys</h3>
-        { redirect ? <Redirect to={ redirect } /> : "" }
         { error ? <div className="error">{ error }</div> : "" }
         <div className={ identityError ? "form-group form-error" : "form-group" }>
           <label>Identity</label>
