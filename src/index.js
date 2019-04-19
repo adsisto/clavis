@@ -46,7 +46,6 @@ app.setLoginItemSettings({
 });
 
 const setupWindow = () => {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 500,
     height: 300,
@@ -56,8 +55,6 @@ const setupWindow = () => {
       nodeIntegration: true
     }
   });
-
-  // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // Open the DevTools.
@@ -79,6 +76,8 @@ const trayMenu = Menu.buildFromTemplate([
     click: () => {
       if (mainWindow === null) {
         setupWindow();
+      } else {
+        mainWindow.focus();
       }
     }
   },

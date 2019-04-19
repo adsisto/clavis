@@ -18,7 +18,7 @@ const path = require("path");
 const webpack = require("webpack");
 
 const ExtractCssChunks = require("extract-css-chunks-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const CopyPlugin = require('copy-webpack-plugin');
 
 const production = process.env.NODE_ENV === "production";
@@ -67,7 +67,7 @@ let config = {
           "postcss-loader",
           "sass-loader"
         ]
-      },
+      }
     ]
   },
   resolve: {
@@ -85,10 +85,11 @@ let config = {
     ),
     new CopyPlugin([
       { from: 'index.html', to: 'index.html' }
-    ]),
+    ])
   ],
   optimization: {
-    minimize: production
+    minimize: production,
+    minimizer: []
   }
 };
 
@@ -98,7 +99,7 @@ if (production) {
       "process.env": { NODE_ENV: JSON.stringify("production") }
     })
   );
-  config.minimizer.push(new UglifyJsPlugin({
+  config.optimization.minimizer.push(new TerserPlugin({
     cache: true,
     parallel: true,
     sourceMap: true
