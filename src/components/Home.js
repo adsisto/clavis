@@ -22,8 +22,9 @@ import log from "electron-log";
 import { exec } from "child_process";
 import path from "path";
 
-import expand from "../images/expand.svg";
-import collapse from "../images/collapse.svg";
+import Collapse from "./icons/Collapse";
+import Expand from "./icons/Expand";
+import Copy from "./icons/Copy";
 
 function Home(props) {
   const store = props.store;
@@ -82,6 +83,7 @@ function Home(props) {
         log.info(`Successfully generated authentication token.`);
 
         setTimeout(() => {
+          log.info("Authentication token expired.");
           setToken("");
           setPlaceholder("<small>Click for</small><br />Authentication Token");
         }, 30000);
@@ -107,21 +109,20 @@ function Home(props) {
           <div onClick={ toggleIdentity }>
             <span className="identity-description">Identity</span>
             <h3 className="identity-text">{ identity }</h3>
-            <object className="identity-button" data={ expanded ? collapse : expand }
-                    type="image/svg+xml"></object>
+            { expanded ? <Collapse className="identity-button" fill="#124a4e" />
+            : <Expand className="identity-button" fill="#124a4e" /> }
           </div>
           <div className={ expanded ? "public-key-expanded" : "public-key" } onClick={ copyKey }>
             <span className="identity-description">Public Key</span><br />
-            <span className="public-key-text">{ publicKey }</span> <small>Click to Copy</small>
+            <span className="public-key-text">{ publicKey }</span>
+            <Copy className="public-key-button" fill="#124a4e" />
           </div>
         </div>
         <div className="token">
           <textarea className="token-field" rows="5" value={ token } readOnly />
-          { token !== "" ? "" :
-          <div className="token-placeholder" onClick={ generateToken }>
-            <span dangerouslySetInnerHTML={{ __html: placeholder }}></span>
-          </div>
-          }
+          { token !== "" ? "" : <div className="token-placeholder" onClick={ generateToken }>
+            <span dangerouslySetInnerHTML={{ __html: placeholder }} />
+          </div> }
         </div>
       </div>
       </div>
