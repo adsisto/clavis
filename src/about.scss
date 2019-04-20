@@ -16,6 +16,9 @@
 
 @import "common";
 
+html {
+    font-size: 14px;
+}
 
 .content {
     padding: .5rem;
@@ -29,5 +32,5 @@ h1, h2, h3 {
 }
 
 .copyright-notice {
-    font-size: .8rem;
+    font-size: .95rem;
 }
