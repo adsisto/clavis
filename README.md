@@ -1,4 +1,4 @@
-<h1 align="center">Clavis</h1>
+<div align="center"><img src=".github/logo.png" width="300px" alt="Clavis" /></div>
 
 <p align="center">
 <img alt="GitHub" src="https://img.shields.io/github/license/adsisto/clavis.svg?color=informational">
