@@ -14,7 +14,7 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import "./style";
+import "./app.scss";
 import "./images";
 import "./fonts";
 

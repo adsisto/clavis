@@ -14,12 +14,11 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { app, BrowserWindow, Menu, Tray } = require('electron');
-
-const Store = require('electron-store');
+import { app, BrowserWindow, Menu, Tray, shell, globalShortcut } from 'electron';
+import Store from 'electron-store';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
@@ -34,8 +33,9 @@ const storeSchema = {
 
 // Keep a global reference of the window object
 let store;
-let mainWindow;
+let mainWindow = null;
 let tray;
+let aboutWindow = null;
 
 store = new Store({
   schema: storeSchema
@@ -49,6 +49,7 @@ const setupWindow = () => {
   mainWindow = new BrowserWindow({
     width: 500,
     height: 300,
+    show: false,
     resizable: false,
     titleBarStyle: "hiddenInset",
     webPreferences: {
@@ -57,15 +58,41 @@ const setupWindow = () => {
   });
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
-  // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
-  // Emitted when the window is closed.
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
   mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null;
+  });
+};
+
+const setupAboutWindow = () => {
+  aboutWindow = new BrowserWindow({
+    width: 500,
+    height: 300,
+    show: false,
+    resizable: false,
+    title: "",
+    webPreferences: {
+      nodeIntegration: false
+    }
+  });
+  aboutWindow.loadURL(`file://${__dirname}/about.html`);
+
+  aboutWindow.once('ready-to-show', () => {
+    aboutWindow.show();
+  });
+
+  aboutWindow.webContents.on('new-window', function(e, url) {
+    e.preventDefault();
+    shell.openExternal(url);
+  });
+
+  aboutWindow.on('closed', () => {
+    aboutWindow = null;
   });
 };
 
@@ -83,7 +110,14 @@ const trayMenu = Menu.buildFromTemplate([
   },
   {
     label: 'About',
-    type: 'normal'
+    type: 'normal',
+    click: () => {
+      if (aboutWindow === null) {
+        setupAboutWindow();
+      } else {
+        aboutWindow.focus();
+      }
+    }
   },
   {
     label: 'Exit',
@@ -104,9 +138,6 @@ const setUpTray = () => {
   });
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   if (process.platform === 'darwin') {
     // app.dock.hide();
@@ -120,4 +151,8 @@ app.on('activate', () => {
   if (mainWindow === null) {
     setupWindow();
   }
+});
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll()
 });

@@ -16,11 +16,23 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+</head>
+<body>
+<div class="content">
+    <h2><%= htmlWebpackPlugin.options.config.productName %> <%= htmlWebpackPlugin.options.config.version %></h2>
+    <h3>&copy; <%= htmlWebpackPlugin.options.config.author.name %> 2019.</h3>
+    <p class="copyright-notice">
+        Calvis is free software: you can redistribute it and/or modify it under
+        the terms of version 3 of the GNU General Public License as published by
+        the Free Software Foundation.
+    </p>
+    <p>
+        <a href="<%= htmlWebpackPlugin.options.config.homepage %>" target="_blank">Website</a> -
+        <a href="<%= htmlWebpackPlugin.options.config.repository.url %>" target="_blank">GitHub</a>
+    </p>
+</div>
+</body>
 </html>

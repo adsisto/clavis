@@ -19,6 +19,7 @@ const webpack = require("webpack");
 
 const ExtractCssChunks = require("extract-css-chunks-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const HtmlPlugin = require("html-webpack-plugin");
 const CopyPlugin = require('copy-webpack-plugin');
 
 const production = process.env.NODE_ENV === "production";
@@ -32,7 +33,8 @@ let config = {
   target: "electron-main",
   entry: {
     index: "./index.js",
-    app: "./app.js"
+    app: "./app.js",
+    about: "./about.js"
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -46,7 +48,7 @@ let config = {
         exclude: /node_modules/
       },
       {
-        test: /\.(jpe?g|png|gif|ttf)$/,
+        test: /\.(jpe?g|png|gif|ttf|svg)$/,
         use: {
           loader: "file-loader",
           options: {
@@ -81,11 +83,20 @@ let config = {
       maxChunks: 1
     }),
     new ExtractCssChunks(
-      { filename: "style.css" }
+      { filename: "[name].css" }
     ),
-    new CopyPlugin([
-      { from: 'index.html', to: 'index.html' }
-    ])
+    new HtmlPlugin({
+      title: "Calvis",
+      template: 'index.html',
+      chunks: ["app"]
+    }),
+    new HtmlPlugin({
+      title: "",
+      template: "about.html",
+      filename: "about.html",
+      chunks: ["about"],
+      config: require("./package.json")
+    })
   ],
   optimization: {
     minimize: production,
