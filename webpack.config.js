@@ -20,7 +20,6 @@ const webpack = require("webpack");
 const ExtractCssChunks = require("extract-css-chunks-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlPlugin = require("html-webpack-plugin");
-const CopyPlugin = require('copy-webpack-plugin');
 
 const production = process.env.NODE_ENV === "production";
 
@@ -86,7 +85,7 @@ let config = {
       { filename: "[name].css" }
     ),
     new HtmlPlugin({
-      title: "Calvis",
+      title: "Clavis",
       template: 'index.html',
       chunks: ["app"]
     }),

@@ -101,7 +101,7 @@ function Home(props) {
   return (
     <div>
       <header>
-        Calvis
+        Clavis
       </header>
       <div className="content-container">
       <div className="content">

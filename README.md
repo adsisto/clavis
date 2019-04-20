@@ -4,9 +4,9 @@
 <img alt="GitHub" src="https://img.shields.io/github/license/adsisto/clavis.svg?color=informational">
 </p>
 
-<p align="center"><img src=".github/screenshot.png" /></p>
-
 <p align="center"><i>Copyright &copy; Andrew Ying 2019.</i></p>
+
+<div align="center"><img src=".github/screenshot.png" /></div>
 
 ## License
 
