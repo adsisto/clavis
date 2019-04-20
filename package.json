@@ -2,7 +2,7 @@
   "name": "@adsisto/clavis",
   "productName": "Clavis",
   "version": "0.0.1",
-  "description": "",
+  "description": "Clavis is a simple desktop security key application. It allows you to generate a public/private key pair and use it to sign JWT tokens for secure authentication with web services.",
   "homepage": "https://adsisto.org",
   "license": "GPL-3.0-only",
   "main": "dist/index.js",

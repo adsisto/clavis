@@ -8,6 +8,8 @@
 
 <div align="center"><img src=".github/screenshot.png" /></div>
 
+Clavis is a simple desktop security key application. It allows you to generate a public/private key pair and use it to sign JWT tokens for secure authentication with web services.
+
 ## License
 
 Clavis is free software: you can redistribute it and/or modify it under the terms
