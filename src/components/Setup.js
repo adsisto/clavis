@@ -104,7 +104,7 @@ function Setup(props) {
         }
 
         setLoading("Checking generated keys...");
-        const pattern = /Public Key: \[\[ ([A-Za-z0-9\+\/\=]+) \]\]/m;
+        const pattern = /Public Key: \[\[ ([A-Za-z0-9+\/=]+) \]\]/m;
         log.debug(`Received console output:\n${stdout}`);
         let match = String(stdout).match(pattern);
 
@@ -163,7 +163,7 @@ function Setup(props) {
       </div>
       </div>
       { loading ? <div className="loading-overlay">
-        <div className="spinning-loader"></div>
+        <div className="spinning-loader" />
         <div className="description">{ loading }</div>
       </div> : "" }
     </div>
