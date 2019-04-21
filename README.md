@@ -1,7 +1,10 @@
 <div align="center"><img src=".github/logo.png" width="300px" alt="Clavis" /></div>
 
 <p align="center">
-<img alt="GitHub" src="https://img.shields.io/github/license/adsisto/clavis.svg?color=informational">
+<a href="https://travis-ci.com/adsisto/clavis"><img src="https://travis-ci.com/adsisto/clavis.svg?branch=master" alt="Build Status"></a>&nbsp;
+<a href="https://goreportcard.com/report/github.com/adsisto/clavis"><img src="https://goreportcard.com/badge/github.com/adsisto/clavis" alt="Go Report Card" /></a>&nbsp;
+<a href="https://codecov.io/gh/adsisto/clavis"><img src="https://img.shields.io/codecov/c/github/adsisto/clavis.svg" alt="Code Coverage" /></a>&nbsp;
+<img src="https://img.shields.io/github/license/adsisto/clavis.svg?color=informational" alt="License">
 </p>
 
 <p align="center"><i>Copyright &copy; Andrew Ying 2019.</i></p>
