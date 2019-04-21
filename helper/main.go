@@ -23,6 +23,7 @@ import (
 	"time"
 )
 
+// KeysOptions contains the options for generation of public/private key pair
 type KeysOptions struct {
 	Identity *string
 	Type     *string
@@ -30,6 +31,7 @@ type KeysOptions struct {
 	Help     *bool
 }
 
+// TokenOptions contains the options for generation of JWT signed by private key
 type TokenOptions struct {
 	Identity *string
 	Size     *int
@@ -38,6 +40,9 @@ type TokenOptions struct {
 	Help     *bool
 }
 
+// CommandError is returned by the individual functions in the event of an error.
+// It is parsed by the CLI wrapper functions to print error message and exit with
+// the appropriate exit code.
 type CommandError struct {
 	Message    string
 	PrintUsage bool

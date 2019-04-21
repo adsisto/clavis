@@ -26,6 +26,7 @@ import (
 	"time"
 )
 
+// GenerateTokenCommand is the CLI wrapper for the GenerateToken function
 func GenerateTokenCommand(options TokenOptions) {
 	token, err := GenerateToken(options)
 
@@ -109,6 +110,7 @@ func GenerateToken(options TokenOptions) ([]byte, CommandError) {
 	return token, cmdErr
 }
 
+// Parse private key stored in the PEM format in a string
 func ParsePrivateKey(key string) (interface{}, string, CommandError) {
 	var (
 		rawKey interface{}

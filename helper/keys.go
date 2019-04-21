@@ -32,7 +32,7 @@ import (
 )
 
 var (
-	ECCurveMap = map[int]elliptic.Curve{
+	ecCurveMap = map[int]elliptic.Curve{
 		224: elliptic.P224(),
 		256: elliptic.P256(),
 		384: elliptic.P384(),
@@ -40,6 +40,7 @@ var (
 	}
 )
 
+// GenerateKeysCommand is the CLI wrapper for the GenerateKeys function
 func GenerateKeysCommand(options KeysOptions) {
 	key, err := GenerateKeys(options)
 
@@ -126,7 +127,7 @@ func GenerateKeys(options KeysOptions) (string, CommandError) {
 func GenerateECKeys(size int) ([]byte, []byte, CommandError) {
 	var cmdErr CommandError
 
-	curve, ok := ECCurveMap[size]
+	curve, ok := ecCurveMap[size]
 	if !ok {
 		cmdErr = CommandError{
 			Message: "Size of the keys are invalid.",
