@@ -15,3 +15,4 @@
  */
 
 import "./about.scss";
+import "./images/logo.png";
