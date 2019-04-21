@@ -1,0 +1,20 @@
+dist: xenial
+
+language: go
+
+env:
+  - GO111MODULE=on
+
+go:
+  - 1.12.x
+
+go_import_path: github.com/adsisto/clavis/helper
+
+git:
+  depth: 1
+
+notifications:
+  email: false
+
+script:
+  - cd helper && go test -v -race ./...
