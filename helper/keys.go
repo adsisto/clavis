@@ -49,7 +49,7 @@ func GenerateKeysCommand(options KeysOptions) {
 		}
 
 		if err.Message != "" {
-			fmt.Println(err.Message)
+			fmt.Fprintln(os.Stderr, err.Message)
 		}
 
 		os.Exit(err.Code)

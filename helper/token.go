@@ -35,7 +35,7 @@ func GenerateTokenCommand(options TokenOptions) {
 		}
 
 		if err.Message != "" {
-			fmt.Println(err.Message)
+			fmt.Fprintln(os.Stderr, err.Message)
 		}
 
 		os.Exit(err.Code)
