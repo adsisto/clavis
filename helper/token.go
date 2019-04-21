@@ -57,51 +57,25 @@ func GenerateToken(options TokenOptions) ([]byte, CommandError) {
 		return nil, cmdErr
 	}
 
-	key, err := keyring.Get("clavis", *options.Identity)
-	if err != nil {
-		cmdErr = CommandError{
-			Message: fmt.Sprintf("Unable to retrieve key from keyring: %s", err),
-			Code:    64,
-		}
-		return nil, cmdErr
-	}
-
-	var algName string
-	block, _ := pem.Decode([]byte(key))
-
-	var rawKey interface{}
-
-	switch block.Type {
-	case "EC PRIVATE KEY":
-		algName = "E"
-		rawKey, err = x509.ParseECPrivateKey(block.Bytes)
+	if *options.KeyPem == "" {
+		key, err := keyring.Get("clavis", *options.Identity)
 		if err != nil {
 			cmdErr = CommandError{
-				Message: "Unable to parse private key",
+				Message: fmt.Sprintf("Unable to retrieve key from keyring: %s", err),
 				Code:    64,
 			}
+			return nil, cmdErr
 		}
-	case "RSA PRIVATE KEY":
-		algName = "R"
-		rawKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
-		if err != nil {
-			cmdErr = CommandError{
-				Message: "Unable to parse private key",
-				Code:    64,
-			}
-		}
-	default:
-		cmdErr = CommandError{
-			Message: "Invalid private key stored in keyring.",
-			Code:    64,
-		}
+
+		options.KeyPem = &key
 	}
 
+	parsedKey, algName, cmdErr := ParsePrivateKey(*options.KeyPem)
 	if cmdErr != (CommandError{}) {
 		return nil, cmdErr
 	}
 
-	algName = fmt.Sprintf("%sS%d", algName, *options.Size)
+	algName = fmt.Sprintf("%vS%d", algName[0], *options.Size)
 	alg := jws.GetSigningMethod(algName)
 	if alg == nil {
 		cmdErr = CommandError{
@@ -111,16 +85,19 @@ func GenerateToken(options TokenOptions) ([]byte, CommandError) {
 		return nil, cmdErr
 	}
 
-	now := time.Now()
+	if options.Time == nil {
+		now := time.Now()
+		options.Time = &now
+	}
 	claims := jws.Claims{
 		"iss": *options.Identity,
-		"iat": now.String(),
-		"nbf": now.String(),
-		"exp": now.Add(time.Second * 30).String(),
+		"iat": (*options.Time).Unix(),
+		"nbf": (*options.Time).Unix(),
+		"exp": (*options.Time).Add(time.Second * 30).Unix(),
 	}
 
 	jwt := jws.NewJWT(claims, alg)
-	token, err := jwt.Serialize(rawKey)
+	token, err := jwt.Serialize(parsedKey)
 	if err != nil {
 		cmdErr = CommandError{
 			Message: fmt.Sprintf("Unable to sign authentication token: %s", err),
@@ -130,4 +107,43 @@ func GenerateToken(options TokenOptions) ([]byte, CommandError) {
 	}
 
 	return token, cmdErr
+}
+
+func ParsePrivateKey(key string) (interface{}, string, CommandError) {
+	var (
+		rawKey interface{}
+		cipher string
+		err    error
+		cmdErr CommandError
+	)
+
+	block, _ := pem.Decode([]byte(key))
+
+	switch block.Type {
+	case "EC PRIVATE KEY":
+		cipher = "EC"
+		rawKey, err = x509.ParseECPrivateKey(block.Bytes)
+		if err != nil {
+			cmdErr = CommandError{
+				Message: "Unable to parse private key",
+				Code:    64,
+			}
+		}
+	case "RSA PRIVATE KEY":
+		cipher = "RSA"
+		rawKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+		if err != nil {
+			cmdErr = CommandError{
+				Message: "Unable to parse private key",
+				Code:    64,
+			}
+		}
+	default:
+		cmdErr = CommandError{
+			Message: "Invalid private key supplied",
+			Code:    64,
+		}
+	}
+
+	return rawKey, cipher, cmdErr
 }

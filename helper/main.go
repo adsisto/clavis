@@ -32,6 +32,8 @@ type KeysOptions struct {
 type TokenOptions struct {
 	Identity *string
 	Size     *int
+	KeyPem   *string
+	Time     *time.Time
 	Help     *bool
 }
 
