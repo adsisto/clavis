@@ -17,4 +17,7 @@ notifications:
   email: false
 
 script:
-  - cd helper && go test -v -race ./...
+  - cd helper && go test -v -race -coverprofile=../coverage.txt -covermode=atomic ./...
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
