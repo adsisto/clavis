@@ -35,6 +35,12 @@ type TokenOptions struct {
 	Help     *bool
 }
 
+type CommandError struct {
+	Message    string
+	PrintUsage bool
+	Code       int
+}
+
 var (
 	keysCommand  = flag.NewFlagSet("keys", flag.ExitOnError)
 	tokenCommand = flag.NewFlagSet("token", flag.ExitOnError)
@@ -123,9 +129,9 @@ func main() {
 
 	switch {
 	case keysCommand.Parsed():
-		GenerateKeys(keysOptions)
+		GenerateKeysCommand(keysOptions)
 	case tokenCommand.Parsed():
-		GenerateToken(tokenOptions)
+		GenerateTokenCommand(tokenOptions)
 	default:
 		os.Exit(70)
 	}

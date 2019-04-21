@@ -17,18 +17,18 @@
 package main
 
 import (
-    "bufio"
-    "bytes"
-    "crypto/ecdsa"
-    "crypto/elliptic"
-    "crypto/rand"
-    "crypto/rsa"
-    "crypto/x509"
-    "encoding/base64"
-    "encoding/pem"
-    "fmt"
-    "github.com/zalando/go-keyring"
-    "os"
+	"bufio"
+	"bytes"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/base64"
+	"encoding/pem"
+	"fmt"
+	"github.com/zalando/go-keyring"
+	"os"
 )
 
 var (
@@ -40,10 +40,36 @@ var (
 	}
 )
 
-func GenerateKeys(options KeysOptions) {
+func GenerateKeysCommand(options KeysOptions) {
+	key, err := GenerateKeys(options)
+
+	if err != (CommandError{}) {
+		if err.PrintUsage {
+			usage()
+		}
+
+		if err.Message != "" {
+			fmt.Println(err.Message)
+		}
+
+		os.Exit(err.Code)
+	}
+
+	fmt.Println("Successfully generated private key.")
+	fmt.Printf("Public Key: [[ %s ]]\n", key)
+	os.Exit(0)
+}
+
+func GenerateKeys(options KeysOptions) (string, CommandError) {
+	var cmdErr CommandError
+
 	if *options.Identity == "" {
-		usage()
-		os.Exit(65)
+		cmdErr = CommandError{
+			PrintUsage: true,
+			Code:       65,
+		}
+
+		return "", cmdErr
 	}
 
 	var key []byte
@@ -51,12 +77,18 @@ func GenerateKeys(options KeysOptions) {
 
 	switch *options.Type {
 	case "EC":
-		key, pubKey = GenerateECKeys(*options.Size)
+		key, pubKey, cmdErr = GenerateECKeys(*options.Size)
 	case "RSA":
-		key, pubKey = GenerateRSAKey(*options.Size)
+		key, pubKey, cmdErr = GenerateRSAKey(*options.Size)
 	default:
-		fmt.Println("Invalid cryptographic mechanism. Exiting...")
-		os.Exit(65)
+		cmdErr = CommandError{
+			Message: "Invalid cryptographic mechanism. Exiting...",
+			Code:    65,
+		}
+	}
+
+	if cmdErr != (CommandError{}) {
+		return "", cmdErr
 	}
 
 	var b bytes.Buffer
@@ -69,57 +101,88 @@ func GenerateKeys(options KeysOptions) {
 
 	err := pem.Encode(writer, pemBlock)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(70)
+		cmdErr = CommandError{
+			Message: err.Error(),
+			Code:    70,
+		}
+
+		return "", cmdErr
 	}
 
 	_ = writer.Flush()
 	err = keyring.Set("clavis", *options.Identity, b.String())
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(77)
+		cmdErr = CommandError{
+			Message: err.Error(),
+			Code:    77,
+		}
+
+		return "", cmdErr
 	}
 
-    fmt.Println("Successfully generated private key.")
-	fmt.Printf("Public Key: [[ %s ]]\n", base64.StdEncoding.EncodeToString(pubKey))
-	os.Exit(0)
+	return base64.StdEncoding.EncodeToString(pubKey), cmdErr
 }
 
-func GenerateECKeys(size int) ([]byte, []byte) {
+func GenerateECKeys(size int) ([]byte, []byte, CommandError) {
+	var cmdErr CommandError
+
 	curve, ok := ECCurveMap[size]
 	if !ok {
-		fmt.Println("Size of the keys are invalid. Exiting...")
-		os.Exit(65)
+		cmdErr = CommandError{
+			Message: "Size of the keys are invalid.",
+			Code:    65,
+		}
+
+		return nil, nil, cmdErr
 	}
 
 	key, err := ecdsa.GenerateKey(curve, rand.Reader)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(70)
+		cmdErr = CommandError{
+			Message: err.Error(),
+			Code:    70,
+		}
+
+		return nil, nil, cmdErr
 	}
 
 	encoded, err := x509.MarshalECPrivateKey(key)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(70)
+		cmdErr = CommandError{
+			Message: err.Error(),
+			Code:    70,
+		}
+
+		return nil, nil, cmdErr
 	}
 
 	encodedPub, err := x509.MarshalPKIXPublicKey(&key.PublicKey)
-    if err != nil {
-        fmt.Println(err)
-        os.Exit(70)
-    }
+	if err != nil {
+		cmdErr = CommandError{
+			Message: err.Error(),
+			Code:    70,
+		}
 
-	return encoded, encodedPub
+		return nil, nil, cmdErr
+	}
+
+	return encoded, encodedPub, cmdErr
 }
 
-func GenerateRSAKey(size int) ([]byte, []byte) {
+func GenerateRSAKey(size int) ([]byte, []byte, CommandError) {
+	var cmdErr CommandError
+
 	key, err := rsa.GenerateKey(rand.Reader, size)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(70)
+		cmdErr = CommandError{
+			Message: err.Error(),
+			Code:    70,
+		}
+
+		return nil, nil, cmdErr
 	}
 
 	return x509.MarshalPKCS1PrivateKey(key),
-	    x509.MarshalPKCS1PublicKey(&key.PublicKey)
+		x509.MarshalPKCS1PublicKey(&key.PublicKey),
+		cmdErr
 }

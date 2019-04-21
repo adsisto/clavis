@@ -26,16 +26,44 @@ import (
 	"time"
 )
 
-func GenerateToken(options TokenOptions) {
+func GenerateTokenCommand(options TokenOptions) {
+	token, err := GenerateToken(options)
+
+	if err != (CommandError{}) {
+		if err.PrintUsage {
+			usage()
+		}
+
+		if err.Message != "" {
+			fmt.Println(err.Message)
+		}
+
+		os.Exit(err.Code)
+	}
+
+	fmt.Println("Successfully generated authentication token.")
+	fmt.Printf("Token: [[ %s ]]\n", token)
+	os.Exit(0)
+}
+
+func GenerateToken(options TokenOptions) ([]byte, CommandError) {
+	var cmdErr CommandError
+
 	if *options.Identity == "" {
-		usage()
-		os.Exit(64)
+		cmdErr = CommandError{
+			PrintUsage: true,
+			Code:       64,
+		}
+		return nil, cmdErr
 	}
 
 	key, err := keyring.Get("clavis", *options.Identity)
 	if err != nil {
-		fmt.Printf("Unable to retrieve key from keyring: %s\n", err)
-		os.Exit(64)
+		cmdErr = CommandError{
+			Message: fmt.Sprintf("Unable to retrieve key from keyring: %s", err),
+			Code:    64,
+		}
+		return nil, cmdErr
 	}
 
 	var algName string
@@ -48,26 +76,39 @@ func GenerateToken(options TokenOptions) {
 		algName = "E"
 		rawKey, err = x509.ParseECPrivateKey(block.Bytes)
 		if err != nil {
-			fmt.Println("Unable to parse private key. Exiting...")
-			os.Exit(64)
+			cmdErr = CommandError{
+				Message: "Unable to parse private key",
+				Code:    64,
+			}
 		}
 	case "RSA PRIVATE KEY":
 		algName = "R"
 		rawKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
 		if err != nil {
-			fmt.Println("Unable to parse private key. Exiting...")
-			os.Exit(64)
+			cmdErr = CommandError{
+				Message: "Unable to parse private key",
+				Code:    64,
+			}
 		}
 	default:
-		fmt.Println("Invalid private key stored in keyring. Exiting...")
-		os.Exit(64)
+		cmdErr = CommandError{
+			Message: "Invalid private key stored in keyring.",
+			Code:    64,
+		}
+	}
+
+	if cmdErr != (CommandError{}) {
+		return nil, cmdErr
 	}
 
 	algName = fmt.Sprintf("%sS%d", algName, *options.Size)
 	alg := jws.GetSigningMethod(algName)
 	if alg == nil {
-		fmt.Println("Invalid hash algorithm. Exiting...")
-		os.Exit(64)
+		cmdErr = CommandError{
+			Message: "Invalid hash algorithm.",
+			Code:    64,
+		}
+		return nil, cmdErr
 	}
 
 	now := time.Now()
@@ -81,11 +122,12 @@ func GenerateToken(options TokenOptions) {
 	jwt := jws.NewJWT(claims, alg)
 	token, err := jwt.Serialize(rawKey)
 	if err != nil {
-		fmt.Printf("Unable to sign authentication token: %s\n", err)
-		os.Exit(70)
+		cmdErr = CommandError{
+			Message: fmt.Sprintf("Unable to sign authentication token: %s", err),
+			Code:    70,
+		}
+		return nil, cmdErr
 	}
 
-	fmt.Println("Successfully generated authentication token.")
-	fmt.Printf("Token: [[ %s ]]\n", token)
-	os.Exit(0)
+	return token, cmdErr
 }
