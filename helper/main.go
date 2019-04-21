@@ -20,6 +20,7 @@ import (
 	"fmt"
 	flag "github.com/spf13/pflag"
 	"os"
+	"time"
 )
 
 type KeysOptions struct {
@@ -85,6 +86,12 @@ var (
 			"s",
 			256,
 			"size of the hash",
+		),
+		KeyPem: tokenCommand.StringP(
+			"key",
+			"k",
+			"",
+			"private key in a PEM format (optional)",
 		),
 		Help: tokenCommand.BoolP(
 			"help",

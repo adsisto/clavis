@@ -79,7 +79,7 @@ func GenerateKeys(options KeysOptions) (string, CommandError) {
 	case "EC":
 		key, pubKey, cmdErr = GenerateECKeys(*options.Size)
 	case "RSA":
-		key, pubKey, cmdErr = GenerateRSAKey(*options.Size)
+		key, pubKey, cmdErr = GenerateRSAKeys(*options.Size)
 	default:
 		cmdErr = CommandError{
 			Message: "Invalid cryptographic mechanism. Exiting...",
@@ -149,7 +149,7 @@ func GenerateECKeys(size int) ([]byte, []byte, CommandError) {
 	encoded, err := x509.MarshalECPrivateKey(key)
 	if err != nil {
 		cmdErr = CommandError{
-			Message: err.Error(),
+			Message: fmt.Sprintf("Unable to generate private key: %s", err),
 			Code:    70,
 		}
 
@@ -159,7 +159,7 @@ func GenerateECKeys(size int) ([]byte, []byte, CommandError) {
 	encodedPub, err := x509.MarshalPKIXPublicKey(&key.PublicKey)
 	if err != nil {
 		cmdErr = CommandError{
-			Message: err.Error(),
+			Message: fmt.Sprintf("Unable to generate pubic key: %s", err),
 			Code:    70,
 		}
 
@@ -169,13 +169,13 @@ func GenerateECKeys(size int) ([]byte, []byte, CommandError) {
 	return encoded, encodedPub, cmdErr
 }
 
-func GenerateRSAKey(size int) ([]byte, []byte, CommandError) {
+func GenerateRSAKeys(size int) ([]byte, []byte, CommandError) {
 	var cmdErr CommandError
 
 	key, err := rsa.GenerateKey(rand.Reader, size)
 	if err != nil {
 		cmdErr = CommandError{
-			Message: err.Error(),
+			Message: fmt.Sprintf("Unable to generate private key: %s", err),
 			Code:    70,
 		}
 

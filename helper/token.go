@@ -41,7 +41,7 @@ func GenerateTokenCommand(options TokenOptions) {
 		os.Exit(err.Code)
 	}
 
-	fmt.Println("Successfully generated authentication token.")
+	fmt.Println("Successfully generated authentication token")
 	fmt.Printf("Token: [[ %s ]]\n", token)
 	os.Exit(0)
 }
@@ -75,11 +75,11 @@ func GenerateToken(options TokenOptions) ([]byte, CommandError) {
 		return nil, cmdErr
 	}
 
-	algName = fmt.Sprintf("%vS%d", algName[0], *options.Size)
+	algName = fmt.Sprintf("%cS%d", []rune(algName)[0], *options.Size)
 	alg := jws.GetSigningMethod(algName)
 	if alg == nil {
 		cmdErr = CommandError{
-			Message: "Invalid hash algorithm.",
+			Message: "Invalid JWT hash algorithm",
 			Code:    64,
 		}
 		return nil, cmdErr
