@@ -4,11 +4,12 @@
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of version 3 of the GNU General Public License as published by the
- * Free Software Foundation.
+ * Free Software Foundation. In addition, this program is also subject to certain
+ * additional terms available at <SUPPLEMENT.md>.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <https://www.gnu.org/licenses/>.
@@ -41,9 +42,31 @@ store = new Store({
   schema: storeSchema
 });
 app.setLoginItemSettings({
-  openAtLogin: store.get('startOnBoot', true),
-  openAsHidden: store.get('hiddenOnStart', true),
+  openAtLogin: store.get("startOnBoot", true),
+  openAsHidden: store.get("hiddenOnStart", true),
 });
+
+const appMenu = Menu.buildFromTemplate([
+  {
+    label: "Clavis",
+    submenu: [
+      {
+        label: "About Clavis",
+        type: "normal",
+        click: () => {
+          if (aboutWindow === null) {
+            setupAboutWindow();
+          } else {
+            aboutWindow.focus();
+          }
+        }
+      },
+      { type: "separator" },
+      { role: "quit" },
+    ]
+  },
+  { role: "editMenu" },
+]);
 
 const setupWindow = () => {
   mainWindow = new BrowserWindow({
@@ -53,12 +76,10 @@ const setupWindow = () => {
     resizable: false,
     titleBarStyle: "hiddenInset",
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
     }
   });
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-
-  mainWindow.webContents.openDevTools();
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
@@ -77,7 +98,7 @@ const setupAboutWindow = () => {
     resizable: false,
     title: "",
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
     }
   });
   aboutWindow.loadURL(`file://${__dirname}/about.html`);
@@ -98,8 +119,8 @@ const setupAboutWindow = () => {
 
 const trayMenu = Menu.buildFromTemplate([
   {
-    label: 'Open',
-    type: 'normal',
+    label: "Open",
+    type: "normal",
     click: () => {
       if (mainWindow === null) {
         setupWindow();
@@ -109,8 +130,8 @@ const trayMenu = Menu.buildFromTemplate([
     }
   },
   {
-    label: 'About',
-    type: 'normal',
+    label: "About",
+    type: "normal",
     click: () => {
       if (aboutWindow === null) {
         setupAboutWindow();
@@ -120,9 +141,8 @@ const trayMenu = Menu.buildFromTemplate([
     }
   },
   {
-    label: 'Exit',
-    type: 'normal',
-    click: () => app.exit(0)
+    label: "Quit",
+    role: "quit",
   }
 ]);
 
@@ -139,12 +159,13 @@ const setUpTray = () => {
 };
 
 app.on('ready', () => {
+  setUpTray();
   if (process.platform === 'darwin') {
-    // app.dock.hide();
+    app.dock.hide();
   }
 
-  setUpTray();
   setupWindow();
+  Menu.setApplicationMenu(appMenu);
 });
 
 app.on('activate', () => {
