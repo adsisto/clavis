@@ -5,6 +5,8 @@
   },
   "files": [
     "**/*",
+    "!.github/**/*",
+    "!.idea/**/*",
     "!node_modules/**/*",
     "!src/**/*",
     "!helper/**/*",
@@ -17,6 +19,7 @@
     "!{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
     "!electron-builder.*"
   ],
+  "asar": false,
   "generateUpdatesFilesForAllChannels": true,
   "remoteBuild": false,
   "mac": {

@@ -4,11 +4,12 @@
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of version 3 of the GNU General Public License as published by the
- * Free Software Foundation.
+ * Free Software Foundation. In addition, this program is also subject to certain
+ * additional terms available at <SUPPLEMENT.md>.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <https://www.gnu.org/licenses/>.
@@ -20,7 +21,7 @@ import { validate } from "validate.js";
 import { useIdentity, usePublicKey, useReady } from "../hooks";
 import log from "electron-log";
 import path from "path";
-import { exec } from "child_process";
+import { execFile } from "child_process";
 
 function Setup(props) {
   const store = props.store;
@@ -86,8 +87,9 @@ function Setup(props) {
     e.preventDefault();
     setLoading("Generating keys...");
     log.debug(`Executing command ./bin/helper keys --id ${identity} --type ${key} --size ${keySize}`);
-    exec(
-      `./bin/helper keys --id ${identity} --type ${key} --size ${keySize}`,
+    execFile(
+      "./bin/helper",
+      ["keys", "--id", identity, "--type", key, "--size", keySize],
       {
         timeout: 10000,
         cwd: path.resolve(__dirname, '../')
