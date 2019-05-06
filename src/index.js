@@ -17,6 +17,7 @@
 
 import { app, BrowserWindow, Menu, Tray, shell, globalShortcut } from 'electron';
 import Store from 'electron-store';
+import uuid from 'uuid/v4';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -24,6 +25,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 const storeSchema = {
+  uuid: { type: 'string', default: '' },
   ready: { type: 'boolean', default: false },
   startOnBoot: { type: 'boolean', default: true },
   hiddenOnStart: { type: 'boolean', default: true },
@@ -45,6 +47,12 @@ app.setLoginItemSettings({
   openAtLogin: store.get("startOnBoot", true),
   openAsHidden: store.get("hiddenOnStart", true),
 });
+
+const generateUuid = () => {
+  if (store.get("uuid", '') === '') {
+    store.set("uuid", uuid());
+  }
+};
 
 const appMenu = Menu.buildFromTemplate([
   {
@@ -166,6 +174,7 @@ app.on('ready', () => {
 
   setupWindow();
   Menu.setApplicationMenu(appMenu);
+  generateUuid();
 });
 
 app.on('activate', () => {
