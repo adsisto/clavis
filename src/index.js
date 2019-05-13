@@ -44,23 +44,23 @@ store = new Store({
   schema: storeSchema
 });
 app.setLoginItemSettings({
-  openAtLogin: store.get("startOnBoot", true),
-  openAsHidden: store.get("hiddenOnStart", true),
+  openAtLogin: store.get('startOnBoot', true),
+  openAsHidden: store.get('hiddenOnStart', true),
 });
 
 const generateUuid = () => {
-  if (store.get("uuid", '') === '') {
-    store.set("uuid", uuid());
+  if (store.get('uuid', '') === '') {
+    store.set('uuid', uuid());
   }
 };
 
 const appMenu = Menu.buildFromTemplate([
   {
-    label: "Clavis",
+    label: 'Clavis',
     submenu: [
       {
-        label: "About Clavis",
-        type: "normal",
+        label: 'About Clavis',
+        type: 'normal',
         click: () => {
           if (aboutWindow === null) {
             setupAboutWindow();
@@ -69,11 +69,11 @@ const appMenu = Menu.buildFromTemplate([
           }
         }
       },
-      { type: "separator" },
-      { role: "quit" },
+      { type: 'separator' },
+      { role: 'quit' },
     ]
   },
-  { role: "editMenu" },
+  { role: 'editMenu' },
 ]);
 
 const setupWindow = () => {
@@ -82,12 +82,12 @@ const setupWindow = () => {
     height: 300,
     show: false,
     resizable: false,
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
     }
   });
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL(`file://${ __dirname }/index.html`);
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
@@ -104,18 +104,18 @@ const setupAboutWindow = () => {
     height: 300,
     show: false,
     resizable: false,
-    title: "",
+    title: '',
     webPreferences: {
       nodeIntegration: false,
     }
   });
-  aboutWindow.loadURL(`file://${__dirname}/about.html`);
+  aboutWindow.loadURL(`file://${ __dirname }/about.html`);
 
   aboutWindow.once('ready-to-show', () => {
     aboutWindow.show();
   });
 
-  aboutWindow.webContents.on('new-window', function(e, url) {
+  aboutWindow.webContents.on('new-window', function (e, url) {
     e.preventDefault();
     shell.openExternal(url);
   });
@@ -127,8 +127,8 @@ const setupAboutWindow = () => {
 
 const trayMenu = Menu.buildFromTemplate([
   {
-    label: "Open",
-    type: "normal",
+    label: 'Open',
+    type: 'normal',
     click: () => {
       if (mainWindow === null) {
         setupWindow();
@@ -138,8 +138,8 @@ const trayMenu = Menu.buildFromTemplate([
     }
   },
   {
-    label: "About",
-    type: "normal",
+    label: 'About',
+    type: 'normal',
     click: () => {
       if (aboutWindow === null) {
         setupAboutWindow();
@@ -149,14 +149,14 @@ const trayMenu = Menu.buildFromTemplate([
     }
   },
   {
-    label: "Quit",
-    role: "quit",
+    label: 'Quit',
+    role: 'quit',
   }
 ]);
 
 const setUpTray = () => {
   // Create the tray menu.
-  tray = new Tray(`${__dirname}/images/tray/icon.png`);
+  tray = new Tray(`${ __dirname }/images/tray/icon.png`);
   tray.setToolTip(app.getName());
   tray.setContextMenu(trayMenu);
 
@@ -184,5 +184,5 @@ app.on('activate', () => {
 });
 
 app.on('will-quit', () => {
-  globalShortcut.unregisterAll()
+  globalShortcut.unregisterAll();
 });
