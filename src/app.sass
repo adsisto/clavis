@@ -1,0 +1,245 @@
+/*!
+ / Clavis
+ / Copyright (c) 2019 Andrew Ying
+ /
+ / This program is free software: you can redistribute it and/or modify it under
+ / the terms of version 3 of the GNU General Public License as published by the
+ / Free Software Foundation. In addition, this program is also subject to certain
+ / additional terms available at <SUPPLEMENT.md>.
+ /
+ / This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ / WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ / FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ /
+ / You should have received a copy of the GNU General Public License along with
+ / this program.  If not, see <https://www.gnu.org/licenses/>.
+ /
+@import "common"
+
+header
+    -webkit-app-region: drag
+    background: #cedee7
+    border-bottom: 1px solid #bec1c3
+    font-size: .8rem
+    font-weight: bold
+    overflow: hidden
+    padding: .6rem .75rem
+    position: fixed
+    text-align: center
+    user-select: none
+    width: calc(100% - 1.5rem)
+    z-index: 100
+
+h3
+    margin-top: 0
+    user-select: none
+
+.button
+    background-color: #274b4f
+    border: 0
+    border-radius: .25rem
+    color: #ffffff
+    font-size: 1rem
+    font-weight: 600
+    margin: .5rem 0
+    padding: .5rem .65rem
+    user-select: none
+
+.content-container
+    height: calc(100vh - 2.2rem - 3px)
+    position: relative
+    top: calc(2.2rem + 3px)
+    width: 100%
+    z-index: 90
+
+.content
+    height: calc(100vh - 3.45rem - 3px)
+    overflow-x: hidden
+    overflow-y: auto
+    padding: .5rem .75rem .75rem
+    width: calc(100% - 1.5rem)
+
+    &::-webkit-scrollbar
+        background-color: #f8f9f9
+        border: 0
+        width: .75rem
+   
+    &::-webkit-scrollbar-thumb
+        background-color: rgba(196, 196, 196, .8)
+        border: .125rem solid #f8f9f9
+        border-radius: .4rem
+        box-shadow: inset 0 0 2px rgba(196, 196, 196, 1)
+
+.identity
+    border-bottom: 1px solid #bec1c3
+    border-top: 1px solid #bec1c3
+    margin: 0 -.75rem 1rem
+    padding: .5rem .75rem
+    position: relative
+    user-select: none
+    width: 100%
+
+    &-description
+        font-size: .8rem
+   
+    &-text
+        margin-bottom: .25rem
+   
+    &-button
+        height: 1.25rem
+        position: absolute
+        right: 1rem
+        top: 1.5rem
+
+.public-key
+    height: 0
+    margin-top: 0
+    opacity: 0
+    overflow-wrap: break-word
+    transition: opacity 100ms, height 1s
+
+    &-expanded
+        background-color: #dee0e1
+        height: auto
+        margin-top: .5rem
+        opacity: 1
+        overflow-wrap: break-word
+        padding: .25rem .5rem .5rem
+        position: relative
+        transition: opacity 400ms, height 500ms
+   
+    &-text
+        user-select: all
+   
+    &-button
+        bottom: .5rem
+        display: inline-block
+        height: 1rem
+        position: absolute
+        right: .5rem
+
+.token
+    position: relative
+
+    &-field
+        border: 1px solid #B0B0B0
+        border-radius: .25rem
+        font-size: 1rem
+        overflow-wrap: break-word
+        padding: .35rem .5rem
+        resize: none
+        user-select: all
+        width: 95%
+
+        &:focus
+            outline: none
+       
+        &::-webkit-scrollbar
+            background-color: #ffffff
+            border: 0
+            border-radius: .25rem
+            width: .75rem
+       
+        &::-webkit-scrollbar-thumb
+            background-color: rgba(196, 196, 196, .8)
+            border: .125rem solid #ffffff
+            border-radius: .4rem
+            box-shadow: inset 0 0 2px rgba(196, 196, 196, 1)
+
+    &-placeholder
+        color: #839b9d
+        display: flex
+        flex-direction: column
+        font-size: 1.5rem
+        font-weight: 600
+        height: 5.5rem
+        justify-content: center
+        left: 1px
+        padding: .25rem .5rem
+        position: absolute
+        text-align: center
+        top: 1px
+        width: calc(95% - .75rem)
+
+.form-group
+    display: flex
+    margin-bottom: .75rem
+    width: 100%
+
+    label
+        align-self: center
+        padding-right: .5rem
+        user-select: none
+        width: 20%
+   
+    .form-item
+        background-color: #ffffff
+        border: 1px solid #B0B0B0
+        border-radius: .35rem
+        box-shadow: none
+        font-size: 1rem
+        padding: .5rem .65rem
+        width: 80%
+
+        &:focus
+            outline: none
+
+.error
+    background-color: #f8d7da
+    border: 1px solid #f5c6cb
+    border-radius: .25rem
+    color: #721c24
+    margin-bottom: .75rem
+    margin-top: -.5rem
+    padding: .5rem .65rem
+
+.form-error
+    /* stylelint-disable-next-line rule-empty-line-before */
+    label
+        color: #ff0000
+   
+    .form-item
+        border-color: #ff0000
+   
+
+.form-error-message
+    color: #ff0000
+    display: block
+    font-size: .85rem
+    font-style: italic
+    margin: -.5rem 0 .75rem 20%
+    padding: 0 .65rem
+    width: 80%
+
+.loading-overlay
+    background-color: transparentize(#f8f9f9, .1)
+    display: flex
+    flex-direction: column
+    height: calc(100% - 2.2rem - 3px)
+    justify-content: center
+    left: 0
+    position: fixed
+    top: calc(2.2rem + 3px)
+    width: 100%
+    z-index: 100
+
+    .spinning-loader
+        animation: rotate-s-loader 1s linear infinite
+        background: transparent
+        border: 3px solid rgba(29, 161, 242, .2)
+        border-left-color: rgb(29, 161, 242)
+        border-radius: 50%
+        height: 30px
+        margin: 1rem auto
+        width: 30px
+   
+    @keyframes rotate-s-loader
+        from
+            transform: rotate(0)
+        to
+            transform: rotate(360deg)
+
+    .description
+        font-size: .9rem
+        margin: 0 auto
+        user-select: none
