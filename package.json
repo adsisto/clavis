@@ -5,7 +5,7 @@
   "description": "Clavis is a simple desktop security key application. It allows you to generate a public/private key pair and use it to sign JWT tokens for secure authentication with web services.",
   "homepage": "https://adsisto.org",
   "license": "GPL-3.0-only",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "scripts": {
     "start": "electron .",
     "build:go": "cd helper && go build -o ../bin/helper .",
