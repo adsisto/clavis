@@ -15,7 +15,10 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { app, BrowserWindow, Menu, Tray, shell, globalShortcut } from 'electron';
+import './images';
+import './fonts';
+
+import { app, BrowserWindow, Menu, Tray, shell, globalShortcut, ipcMain } from 'electron';
 import Store from 'electron-store';
 import uuid from 'uuid/v4';
 

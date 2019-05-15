@@ -20,7 +20,7 @@
 header
     -webkit-app-region: drag
     background: #cedee7
-    border-bottom: 1px solid #bec1c3
+    border-bottom: 1px solid $medium-gray
     font-size: .8rem
     font-weight: bold
     overflow: hidden
@@ -36,10 +36,10 @@ h3
     user-select: none
 
 .button
-    background-color: #274b4f
+    background-color: $primary
     border: 0
     border-radius: .25rem
-    color: #ffffff
+    color: $white
     font-size: 1rem
     font-weight: 600
     margin: .5rem 0
@@ -61,19 +61,19 @@ h3
     width: calc(100% - 1.5rem)
 
     &::-webkit-scrollbar
-        background-color: #f8f9f9
+        background-color: $light-gray
         border: 0
         width: .75rem
    
     &::-webkit-scrollbar-thumb
-        background-color: rgba(196, 196, 196, .8)
-        border: .125rem solid #f8f9f9
+        background-color: transparentize($medium-gray, .2)
+        border: .125rem solid $light-gray
         border-radius: .4rem
-        box-shadow: inset 0 0 2px rgba(196, 196, 196, 1)
+        box-shadow: inset 0 0 2px $medium-gray
 
 .identity
-    border-bottom: 1px solid #bec1c3
-    border-top: 1px solid #bec1c3
+    border-bottom: 1px solid $medium-gray
+    border-top: 1px solid $medium-gray
     margin: 0 -.75rem 1rem
     padding: .5rem .75rem
     position: relative
@@ -123,7 +123,7 @@ h3
     position: relative
 
     &-field
-        border: 1px solid #B0B0B0
+        border: 1px solid $medium-gray
         border-radius: .25rem
         font-size: 1rem
         overflow-wrap: break-word
@@ -136,16 +136,16 @@ h3
             outline: none
        
         &::-webkit-scrollbar
-            background-color: #ffffff
+            background-color: $white
             border: 0
             border-radius: .25rem
             width: .75rem
        
         &::-webkit-scrollbar-thumb
-            background-color: rgba(196, 196, 196, .8)
-            border: .125rem solid #ffffff
+            background-color: transparentize($medium-gray, .2)
+            border: .125rem solid $white
             border-radius: .4rem
-            box-shadow: inset 0 0 2px rgba(196, 196, 196, 1)
+            box-shadow: inset 0 0 2px $medium-gray
 
     &-placeholder
         color: #839b9d
@@ -174,8 +174,8 @@ h3
         width: 20%
    
     .form-item
-        background-color: #ffffff
-        border: 1px solid #B0B0B0
+        background-color: $white
+        border: 1px solid $medium-gray
         border-radius: .35rem
         box-shadow: none
         font-size: 1rem
@@ -201,7 +201,6 @@ h3
    
     .form-item
         border-color: #ff0000
-   
 
 .form-error-message
     color: #ff0000

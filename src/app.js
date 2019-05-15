@@ -15,9 +15,7 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import './app.scss';
-import './images';
-import './fonts';
+import './css/app';
 
 import React from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom';

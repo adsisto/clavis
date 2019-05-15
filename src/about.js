@@ -15,5 +15,5 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import './about.scss';
+import './css/about';
 import './images/logo.png';
