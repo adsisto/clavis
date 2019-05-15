@@ -18,9 +18,18 @@
 import './images';
 import './fonts';
 
-import { app, BrowserWindow, Menu, Tray, shell, globalShortcut, ipcMain } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  Tray,
+  shell,
+  globalShortcut,
+  ipcMain
+} from 'electron';
 import Store from 'electron-store';
 import uuid from 'uuid/v4';
+import { generateKey, generateToken } from './helper';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -178,6 +187,16 @@ app.on('ready', () => {
   setupWindow();
   Menu.setApplicationMenu(appMenu);
   generateUuid();
+
+  ipcMain.on('key-request', (event, message) => {
+    const mess = generateKey(message);
+    event.reply('key-receive', mess);
+  });
+
+  ipcMain.on('token-request', (event, message) => {
+    const mess = generateToken(message);
+    event.reply('token-receive', mess);
+  });
 });
 
 app.on('activate', () => {

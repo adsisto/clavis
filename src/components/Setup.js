@@ -20,9 +20,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { validate } from 'validate.js';
 import { useIdentity, usePublicKey, useReady } from '../hooks';
-import log from 'electron-log';
-import path from 'path';
-import { execFile } from 'child_process';
+import { ipcRenderer } from 'electron';
 
 function Setup(props) {
   const store = props.store;
@@ -84,39 +82,27 @@ function Setup(props) {
       : '';
   };
 
+  ipcRenderer.on('key-receive', (event, message) => {
+    if (message.error !== false) {
+      setLoading(undefined);
+      setError('Failed to generate keys. Please try again.');
+
+      return;
+    }
+
+    setPublicKey(message.publicKey);
+    setReady(true);
+  });
+
   const onSubmit = (e) => {
     e.preventDefault();
+
     setLoading('Generating keys...');
-    log.debug(`Executing command ./bin/helper keys --id ${ identity } --type ${ key } --size ${ keySize }`);
-    execFile(
-      './bin/helper',
-      [ 'keys', '--id', identity, '--type', key, '--size', keySize ],
-      {
-        timeout: 10000,
-        cwd: path.resolve(__dirname, '../')
-      },
-      (err, stdout, stderr) => {
-        if (err) {
-          setLoading(undefined);
-
-          log.error(`Failed to generated key pair. Command failed with exit code ${ err.code }.`);
-          log.debug(`Command output was:\n${ stdout }${ stderr }`);
-          setError('Failed to generate keys. Please try again.');
-
-          return;
-        }
-
-        setLoading('Checking generated keys...');
-        const pattern = /Public Key: \[\[ ([A-Za-z0-9+/=]+) ]]/m;
-        log.debug(`Received console output:\n${ stdout }`);
-        let match = String(stdout).match(pattern);
-
-        setPublicKey(match[1]);
-        log.info('Successfully generated new key pair.');
-
-        setReady(true);
-      }
-    );
+    ipcRenderer.send('key-request', {
+      identity: identity,
+      key: key,
+      keySize: keySize
+    });
   };
 
   if (ready) {

@@ -23,6 +23,7 @@ import { render } from 'react-dom';
 import Store from 'electron-store';
 import Home from './components/Home';
 import Setup from './components/Setup';
+import Authorise from './components/Authorise';
 
 function App() {
   const storeSchema = {
@@ -41,6 +42,7 @@ function App() {
     <Router>
       <div>
         <Route exact path="/" render={ (props) => <Home { ...props } store={ store }/> }/>
+        <Route path="/authorise" render={ (props) => <Authorise { ...props } store={ store } /> } />
         <Route path="/home" render={ (props) => <Home { ...props } store={ store }/> }/>
         <Route path="/setup" render={ (props) => <Setup { ...props } store={ store }/> }/>
       </div>

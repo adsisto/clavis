@@ -19,10 +19,8 @@ import React, { useState } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useIdentity, usePublicKey, useReady } from '../hooks';
-import { clipboard } from 'electron';
+import { clipboard, ipcRenderer } from 'electron';
 import log from 'electron-log';
-import { execFile } from 'child_process';
-import path from 'path';
 
 import Collapse from './icons/Collapse';
 import Expand from './icons/Expand';
@@ -57,44 +55,29 @@ function Home(props) {
       return;
     }
 
-    setPlaceholder('Generating keys...');
+    setPlaceholder('Generating token...');
     setLoading(true);
-    log.debug(`Executing command ./bin/helper token --id ${ identity } --size 256`);
-    execFile(
-      './bin/helper',
-      [ 'token', '--id', identity, '--size', 256 ],
-      {
-        timeout: 10000,
-        cwd: path.resolve(__dirname, '../')
-      },
-      (err, stdout, stderr) => {
-        if (err) {
-          setPlaceholder('<small>Click for</small><br />Authentication Token');
 
-          log.error(`Failed to generated token. Command failed with exit code ${ err.code }.`);
-          log.debug(`Command output was:\n${ stdout }${ stderr }`);
-
-          setLoading(false);
-          return;
-        }
-
-        setPlaceholder('Checking generated token...');
-        const pattern = /Token: \[\[ ([A-Za-z0-9\-_=]+\.[A-Za-z0-9\-_=]+\.[A-Za-z0-9\-_=]+) \]\]/m;
-        log.debug(`Received console output:\n${ stdout }`);
-        let match = String(stdout).match(pattern);
-
-        setToken(match[1]);
-        log.info('Successfully generated authentication token.');
-
-        setTimeout(() => {
-          log.info('Authentication token expired.');
-          setToken('');
-          setPlaceholder('<small>Click for</small><br />Authentication Token');
-        }, 30000);
-        setLoading(false);
-      }
-    );
+    ipcRenderer.send('token-request', {
+      identity: identity
+    });
   };
+
+  ipcRenderer.on('token-receive', (event, message) => {
+    if (message.error) {
+      setPlaceholder('<small>Click for</small><br />Authentication Token');
+      setLoading(false);
+      return;
+    }
+
+    setToken(message.token);
+    setTimeout(() => {
+      log.info('Authentication token expired.');
+      setToken('');
+      setPlaceholder('<small>Click for</small><br />Authentication Token');
+    }, 30000);
+    setLoading(false);
+  });
 
   if (!ready) {
     return (
