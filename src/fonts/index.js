@@ -16,12 +16,12 @@
  */
 
 import './OpenSans-Bold.ttf';
-import './fonts/OpenSans-BoldItalic.ttf';
-import './fonts/OpenSans-ExtraBold.ttf';
-import './fonts/OpenSans-ExtraBoldItalic.ttf';
-import './fonts/OpenSans-Italic.ttf';
-import './fonts/OpenSans-Light.ttf';
-import './fonts/OpenSans-LightItalic.ttf';
-import './fonts/OpenSans-Regular.ttf';
-import './fonts/OpenSans-SemiBold.ttf';
-import './fonts/OpenSans-SemiBoldItalic.ttf';
+import './OpenSans-BoldItalic.ttf';
+import './OpenSans-ExtraBold.ttf';
+import './OpenSans-ExtraBoldItalic.ttf';
+import './OpenSans-Italic.ttf';
+import './OpenSans-Light.ttf';
+import './OpenSans-LightItalic.ttf';
+import './OpenSans-Regular.ttf';
+import './OpenSans-SemiBold.ttf';
+import './OpenSans-SemiBoldItalic.ttf';

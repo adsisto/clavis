@@ -16,5 +16,5 @@
  */
 
 import './tray/icon.png';
-import './images/tray/icon@2x.png';
-import './images/tray/icon@4x.png';
+import './tray/icon@2x.png';
+import './tray/icon@4x.png';
