@@ -73,7 +73,7 @@ let config = {
     ]
   },
   resolve: {
-    extensions: [ '.js', '.jsx', '.css', '.scss' ],
+    extensions: [ '.js', '.jsx', '.css', '.sass', '.scss' ],
     alias: {
       '~': path.resolve(__dirname, 'node_modules')
     }
