@@ -61,7 +61,7 @@
     "query-string": "^6.5.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.0",
+    "react-router-dom": "^5.0.1",
     "sass-loader": "^7.1.0",
     "source-map-support": "^0.5.12",
     "style-loader": "^0.23.1",
