@@ -15,13 +15,19 @@
  * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import './OpenSans-Bold.ttf';
-import './OpenSans-BoldItalic.ttf';
-import './OpenSans-ExtraBold.ttf';
-import './OpenSans-ExtraBoldItalic.ttf';
-import './OpenSans-Italic.ttf';
-import './OpenSans-Light.ttf';
-import './OpenSans-LightItalic.ttf';
-import './OpenSans-Regular.ttf';
-import './OpenSans-SemiBold.ttf';
-import './OpenSans-SemiBoldItalic.ttf';
+import './PublicSans-Black.ttf';
+import './PublicSans-BlackItalic.ttf';
+import './PublicSans-Bold.ttf';
+import './PublicSans-BoldItalic.ttf';
+import './PublicSans-ExtraBold.ttf';
+import './PublicSans-ExtraBoldItalic.ttf';
+import './PublicSans-ExtraLight.ttf';
+import './PublicSans-ExtraLightItalic.ttf';
+import './PublicSans-Italic.ttf';
+import './PublicSans-Light.ttf';
+import './PublicSans-LightItalic.ttf';
+import './PublicSans-Regular.ttf';
+import './PublicSans-SemiBold.ttf';
+import './PublicSans-SemiBoldItalic.ttf';
+import './PublicSans-Thin.ttf';
+import './PublicSans-ThinItalic.ttf';
