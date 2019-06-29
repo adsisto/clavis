@@ -21,6 +21,9 @@ import React from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { render } from 'react-dom';
 import Store from 'electron-store';
+import bugsnag from '@bugsnag/js';
+import bugsnagReact from '@bugsnag/plugin-react';
+
 import Home from './components/Home';
 import Setup from './components/Setup';
 import Authorise from './components/Authorise';
@@ -32,21 +35,28 @@ function App() {
     hiddenOnStart: { type: 'boolean', default: true },
     identity: { type: 'string' },
     publicKey: { type: 'string' },
-    hotKey: { type: 'string' }
+    hotKey: { type: 'string' },
+    sendBugReports: { type: 'boolean', default: true }
   };
   const store = new Store({
     schema: storeSchema
   });
 
+  const bugsnagClient = bugsnag('BUGSNAG_API_KEY');
+  bugsnagClient.use(bugsnagReact, React);
+  const ErrorBoundary = bugsnagClient.getPlugin('react');
+
   return (
-    <Router>
-      <div>
-        <Route exact path="/" render={ (props) => <Home { ...props } store={ store }/> }/>
-        <Route path="/authorise" render={ (props) => <Authorise { ...props } store={ store } /> } />
-        <Route path="/home" render={ (props) => <Home { ...props } store={ store }/> }/>
-        <Route path="/setup" render={ (props) => <Setup { ...props } store={ store }/> }/>
-      </div>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <div>
+          <Route exact path="/" render={ (props) => <Home { ...props } store={ store }/> }/>
+          <Route path="/authorise" render={ (props) => <Authorise { ...props } store={ store } /> } />
+          <Route path="/home" render={ (props) => <Home { ...props } store={ store }/> }/>
+          <Route path="/setup" render={ (props) => <Setup { ...props } store={ store }/> }/>
+        </div>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
