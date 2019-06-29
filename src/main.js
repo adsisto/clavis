@@ -20,15 +20,14 @@ import './fonts';
 
 import {
   app,
-  BrowserWindow,
   Menu,
   Tray,
-  shell,
   globalShortcut,
   ipcMain
 } from 'electron';
 import Store from 'electron-store';
 import uuid from 'uuid/v4';
+import { setupWindow, setupAboutWindow } from './windows';
 import { generateKey, generateToken } from './helper';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -87,55 +86,6 @@ const appMenu = Menu.buildFromTemplate([
   },
   { role: 'editMenu' },
 ]);
-
-const setupWindow = () => {
-  mainWindow = new BrowserWindow({
-    width: 500,
-    height: 300,
-    show: false,
-    resizable: false,
-    titleBarStyle: 'hiddenInset',
-    webPreferences: {
-      nodeIntegration: true,
-    }
-  });
-  mainWindow.loadURL(`file://${ __dirname }/index.html`);
-
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-};
-
-const setupAboutWindow = () => {
-  aboutWindow = new BrowserWindow({
-    width: 500,
-    height: 300,
-    show: false,
-    resizable: false,
-    title: '',
-    webPreferences: {
-      nodeIntegration: false,
-    }
-  });
-  aboutWindow.loadURL(`file://${ __dirname }/about.html`);
-
-  aboutWindow.once('ready-to-show', () => {
-    aboutWindow.show();
-  });
-
-  aboutWindow.webContents.on('new-window', function (e, url) {
-    e.preventDefault();
-    shell.openExternal(url);
-  });
-
-  aboutWindow.on('closed', () => {
-    aboutWindow = null;
-  });
-};
 
 const trayMenu = Menu.buildFromTemplate([
   {
