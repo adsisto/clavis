@@ -26,7 +26,6 @@ import {
   ipcMain
 } from 'electron';
 import Store from 'electron-store';
-import uuid from 'uuid/v4';
 import { setupWindow, setupAboutWindow } from './windows';
 import { generateKey, generateToken } from './helper';
 
@@ -42,7 +41,8 @@ const storeSchema = {
   hiddenOnStart: { type: 'boolean', default: true },
   identity: { type: 'string' },
   publicKey: { type: 'string' },
-  hotKey: { type: 'string' }
+  hotKey: { type: 'string' },
+  sendBugReports: { type: 'boolean', default: true }
 };
 
 // Keep a global reference of the window object
@@ -58,12 +58,6 @@ app.setLoginItemSettings({
   openAtLogin: store.get('startOnBoot', true),
   openAsHidden: store.get('hiddenOnStart', true),
 });
-
-const generateUuid = () => {
-  if (store.get('uuid', '') === '') {
-    store.set('uuid', uuid());
-  }
-};
 
 const appMenu = Menu.buildFromTemplate([
   {
@@ -136,16 +130,14 @@ app.on('ready', () => {
 
   setupWindow();
   Menu.setApplicationMenu(appMenu);
-  generateUuid();
 
   ipcMain.on('key-request', (event, message) => {
-    const mess = generateKey(message);
-    event.reply('key-receive', mess);
+    Object.assign(message, { store: store });
+    event.reply('key-receive', generateKey(message));
   });
 
   ipcMain.on('token-request', (event, message) => {
-    const mess = generateToken(message);
-    event.reply('token-receive', mess);
+    event.reply('token-receive', generateToken(message));
   });
 });
 

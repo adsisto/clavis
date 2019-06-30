@@ -18,6 +18,7 @@
 import log from 'electron-log';
 import { execFileSync } from 'child_process';
 import path from 'path';
+import uuid from 'uuid/v5';
 
 export const generateKey = (options) => {
   log.debug(
@@ -36,6 +37,8 @@ export const generateKey = (options) => {
     log.debug(`Received console output:\n${ stdout }`);
     let match = String(stdout).match(pattern);
     log.info('Successfully generated new key pair.');
+
+    options.store.set('uuid', uuid(options.identity, uuid.name));
 
     return { error: false, publicKey: match[1] };
   } catch (error) {
