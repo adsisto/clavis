@@ -19,6 +19,7 @@
     "!{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
     "!electron-builder.*"
   ],
+  "afterSign": "build/notarise.js",
   "asar": false,
   "generateUpdatesFilesForAllChannels": true,
   "remoteBuild": false,
