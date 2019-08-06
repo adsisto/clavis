@@ -22,6 +22,7 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 
+const { version } = require('./package.json');
 const production = process.env.NODE_ENV === 'production';
 
 let config = {
@@ -105,11 +106,11 @@ let config = {
 };
 
 if (production) {
-  config.plugins.push(
-    new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify('production') }
-    })
-  );
+  config.plugins.push(new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    BUGSNAG_API_KEY: JSON.stringify(''),
+    VERSION: JSON.stringify(version)
+  }));
   config.optimization.minimizer.push(new TerserPlugin({
     cache: true,
     parallel: true,

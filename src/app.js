@@ -42,7 +42,7 @@ function App() {
     schema: storeSchema
   });
 
-  const bugsnagClient = bugsnag('BUGSNAG_API_KEY');
+  const bugsnagClient = bugsnag(BUGSNAG_API_KEY);
   bugsnagClient.use(bugsnagReact, React);
   const ErrorBoundary = bugsnagClient.getPlugin('react');
 
