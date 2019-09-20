@@ -38,7 +38,7 @@
     "@bugsnag/plugin-react": "^6.4.0",
     "autoprefixer": "^9.6.1",
     "babel-loader": "^8.0.6",
-    "cross-env": "^5.2.0",
+    "cross-env": "^6.0.0",
     "css-loader": "^3.1.0",
     "electron": "6.0.0",
     "electron-builder": "^21.2.0",
