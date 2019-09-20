@@ -69,7 +69,7 @@
     "source-map-support": "^0.5.13",
     "style-loader": "^1.0.0",
     "stylelint": "^10.1.0",
-    "stylelint-config-sass-guidelines": "^6.0.0",
+    "stylelint-config-sass-guidelines": "^6.1.0",
     "terser-webpack-plugin": "^1.4.1",
     "uuid": "^3.3.2",
     "validate.js": "^0.13.1",
