@@ -33,7 +33,7 @@
     "@babel/plugin-proposal-function-bind": "^7.0.0",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-react": "^7.9.4",
     "@bugsnag/js": "^6.3.2",
     "@bugsnag/plugin-react": "^6.2.0",
     "autoprefixer": "^9.6.1",
