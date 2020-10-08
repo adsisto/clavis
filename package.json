@@ -70,7 +70,7 @@
     "style-loader": "^0.23.1",
     "stylelint": "^10.1.0",
     "stylelint-config-sass-guidelines": "^6.0.0",
-    "terser-webpack-plugin": "^1.4.1",
+    "terser-webpack-plugin": "^4.2.3",
     "uuid": "^3.3.2",
     "validate.js": "^0.13.1",
     "webpack": "^4.39.1",
